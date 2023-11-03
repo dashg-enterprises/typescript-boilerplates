@@ -1,5 +1,5 @@
 import { BaseHttpController, controller, httpPost } from "inversify-express-utils";
-import { IAccountService } from "../application/AccountService";
+import { IAccountService } from "../application/services/AccountService";
 import { inject } from "inversify";
 import { Account } from "../infrastructure/models/Account";
 import { Request } from "express";

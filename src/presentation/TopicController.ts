@@ -1,5 +1,5 @@
 import { BaseHttpController, controller, httpGet, httpPost } from "inversify-express-utils";
-import { ITopicService } from "../application/TopicService";
+import { ITopicService } from "../application/services/TopicService";
 import { inject } from "inversify";
 import { Request } from "express";
 import { TYPES } from "../TYPES";

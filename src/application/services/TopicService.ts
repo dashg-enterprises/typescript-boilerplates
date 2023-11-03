@@ -1,9 +1,9 @@
 import { Repository } from "typeorm";
-import { Topic } from "../infrastructure/models/Topic";
-import { Account } from "../infrastructure/models/Account";
-import { Post } from "../infrastructure/models/Post";
+import { Topic } from "../../infrastructure/models/Topic";
+import { Account } from "../../infrastructure/models/Account";
+import { Post } from "../../infrastructure/models/Post";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES";
+import { TYPES } from "../../TYPES";
 
 export interface ITopicService {
     createTopic(topic: Topic): Promise<Topic>;
