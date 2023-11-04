@@ -1,10 +1,10 @@
 import { Repository } from "typeorm";
-import { Account } from "../../../infrastructure/models/Account";
+import { Account } from "../models/Account";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../TYPES";
-import AccountAggregate from "../models/AccountAggregate";
-import { AccountState } from "../models/state/AccountState";
-import { IAccountAggregateRepository } from "../../../infrastructure/repositories/IAccountAggregateRepository";
+import { TYPES } from "../../TYPES";
+import AccountAggregate from "../../application/domain/models/AccountAggregate";
+import { AccountState } from "../../application/domain/models/state/AccountState";
+import { IAccountAggregateRepository } from "../../application/domain/repositories/IAccountAggregateRepository";
 
 @injectable()
 export class AccountAggregateRepository implements IAccountAggregateRepository {
@@ -19,7 +19,7 @@ export class AccountAggregateRepository implements IAccountAggregateRepository {
         return this._accountRepo.save(accountData).then(d => this.mapToAggregate(d));
     }
 
-    mapToData(accountState: AccountState): Account {
+    private mapToData(accountState: AccountState): Account {
         const accountData = new Account();
         accountData.id = accountState.id;
         accountData.username = accountState.username;
@@ -27,7 +27,7 @@ export class AccountAggregateRepository implements IAccountAggregateRepository {
         return accountData;
     }
 
-    mapToAggregate(accountData: Account): AccountAggregate {
+    private mapToAggregate(accountData: Account): AccountAggregate {
         const accountAggregate = new AccountAggregate(accountData.id, accountData.username, accountData.password);
         return accountAggregate;
     }

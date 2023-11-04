@@ -3,7 +3,7 @@ import { Account } from "../../infrastructure/models/Account";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../TYPES";
 import AccountAggregate from "../domain/models/AccountAggregate";
-import { AccountAggregateRepository } from "../domain/repositories/AccountAggregateRepository";
+import { AccountAggregateRepository } from "../../infrastructure/repositories/AccountAggregateRepository";
 import { AccountState } from "../domain/models/state/AccountState";
 
 export interface IAccountService {

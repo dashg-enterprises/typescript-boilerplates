@@ -7,8 +7,8 @@ import { ITopicService, TopicService } from "./application/services/TopicService
 import { Container, AsyncContainerModule, ContainerModule } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "./TYPES";
-import { IAccountAggregateRepository } from "./infrastructure/repositories/IAccountAggregateRepository";
-import { AccountAggregateRepository } from "./application/domain/repositories/AccountAggregateRepository";
+import { IAccountAggregateRepository } from "./application/domain/repositories/IAccountAggregateRepository";
+import { AccountAggregateRepository } from "./infrastructure/repositories/AccountAggregateRepository";
 
 import "./presentation/AccountController";
 import "./presentation/TopicController";
