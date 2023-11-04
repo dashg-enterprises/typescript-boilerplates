@@ -13,6 +13,8 @@ import { AccountAggregateRepository } from "./infrastructure/repositories/Accoun
 import "./presentation/AccountController";
 import "./presentation/TopicController";
 import "./presentation/PostController";
+import { ITopicAggregateRepository } from "./application/domain/repositories/ITopicAggregateRepository";
+import { TopicAggregateRepository } from "./infrastructure/repositories/TopicAggregateRepository";
 
 export default async function loadContainer() {
 
@@ -25,6 +27,7 @@ export default async function loadContainer() {
 
     const domainBindings = new ContainerModule(bind => {
         bind<IAccountAggregateRepository>(TYPES.IAccountAggregateRepository).to(AccountAggregateRepository);
+        bind<ITopicAggregateRepository>(TYPES.ITopicAggregateRepository).to(TopicAggregateRepository);
     });
 
     const dbBindings = new AsyncContainerModule(async bind => {

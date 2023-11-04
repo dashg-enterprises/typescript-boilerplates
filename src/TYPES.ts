@@ -3,5 +3,6 @@ export const TYPES = {
     TopicDataRepo: "Repository<Topic>",
     IAccountService: "IAccountService",
     ITopicService: "ITopicService",
-    IAccountAggregateRepository: "IAccountAggregateRepository"
+    IAccountAggregateRepository: "IAccountAggregateRepository",
+    ITopicAggregateRepository: "ITopicAggregateRepository"
 }
