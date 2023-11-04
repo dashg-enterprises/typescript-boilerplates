@@ -14,7 +14,7 @@ export class Topic {
     name: string;
 
     @ManyToOne(() => Account, (account) => account.topics)
-    account: Account
+    account?: Account
 
     @OneToMany(() => Post, (post) => post.topic, {cascade: true, eager: true})
     posts: Post[];

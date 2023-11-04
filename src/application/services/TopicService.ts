@@ -4,6 +4,8 @@ import { Account } from "../../infrastructure/models/Account";
 import { Post } from "../../infrastructure/models/Post";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../TYPES";
+import { ITopicAggregateRepository } from "../domain/repositories/ITopicAggregateRepository";
+import TopicAggregate from "../domain/models/TopicAggregate";
 
 export interface ITopicService {
     createTopic(topic: Topic): Promise<Topic>;
@@ -14,10 +16,10 @@ export interface ITopicService {
 
 @injectable()
 export class TopicService implements ITopicService {
-    topicRepo: Repository<Topic>;
+    topicRepo: ITopicAggregateRepository;
     accountRepo: Repository<Account>;
     constructor(
-        @inject(TYPES.TopicDataRepo) topicRepo: Repository<Topic>,
+        @inject(TYPES.ITopicAggregateRepository) topicRepo: ITopicAggregateRepository,
         @inject(TYPES.AccountDataRepo) accountRepo: Repository<Account>
     ) {
         this.topicRepo = topicRepo;
@@ -29,38 +31,32 @@ export class TopicService implements ITopicService {
             if (account == null) {
                 throw new Error("This account does not exist");
             }
-            return this.topicRepo.save(topic);
+            const newTopic = this.topicRepo.mapToAggregate(topic);
+            return this.topicRepo.save(newTopic)
+        }).then(savedTopic => {
+            return savedTopic.getState();
         });
     }
 
     addPost(post: Post) {
-        return this.getTopicById(post.topicId).then(topic => {
+        return this.topicRepo.get(post.topicId).then(topic => {
             post.createdAt = new Date().toISOString();
-            if (!topic.posts) {
-                if (post.type === "recap") {
-                    throw new Error("Cannot start a topic with a recap");
-                }
-                topic.posts = [post];
+            if (post.type === "entry") {
+                topic.addEntry(post);
             } else {
-                if (post.type === "recap" && topic.posts[topic.posts.length - 1].type === "recap") {
-                    throw new Error("Cannot follow a recap with another recap");
-                }
-                topic.posts.push(post);
+                topic.addRecap(post);
             }
-        
             return this.topicRepo.save(topic);
+        }).then(savedTopic => {
+            return savedTopic.getState();
         });
     }
 
     getAllTopics() {
-        return this.topicRepo.find();
+        return this.topicRepo.getAll().then(allTopics => allTopics.map(t => t.getState()));
     }
 
     getTopicById(id: number) {
-        return this.topicRepo.findOne({
-            where: {
-                id: id
-            }
-        });
+        return this.topicRepo.get(id).then(t => t.getState());
     }
 }

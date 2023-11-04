@@ -21,7 +21,19 @@ export class TopicAggregateRepository implements ITopicAggregateRepository {
         return this._topicRepo.save(topicData).then(d => this.mapToAggregate(d));
     }
 
-    private mapToData(topicState: TopicState): Topic {
+    getAll() {
+        return this._topicRepo.find().then(allTopics => allTopics.map(this.mapToAggregate));
+    }
+
+    get(id: number) {
+        return this._topicRepo.findOne({
+            where: {
+                id: id
+            }
+        }).then(this.mapToAggregate);
+    }
+
+    mapToData(topicState: TopicState): Topic {
         const topicData = new Topic();
         topicData.id = topicState.id;
         topicData.accountId = topicState.accountId;
@@ -30,7 +42,7 @@ export class TopicAggregateRepository implements ITopicAggregateRepository {
         return topicData;
     }
 
-    private mapToAggregate(topicData: Topic): TopicAggregate {
+    mapToAggregate(topicData: Topic): TopicAggregate {
         const topicAggregate = new TopicAggregate(
             topicData.id,
             topicData.accountId,
