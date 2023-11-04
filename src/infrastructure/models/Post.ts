@@ -23,5 +23,5 @@ export class Post {
     createdAt: string;
 
     @ManyToOne(() => Topic, (topic) => topic.posts)
-    topic: Topic
+    topic?: Topic
 }

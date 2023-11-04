@@ -25,8 +25,8 @@ export class TopicAggregateRepository implements ITopicAggregateRepository {
         const topicData = new Topic();
         topicData.id = topicState.id;
         topicData.accountId = topicState.accountId;
-        topicData.accountId = topicState.accountId;
-        topicData.accountId = topicState.accountId;
+        topicData.name = topicState.name;
+        topicData.posts = topicState.posts;
         return topicData;
     }
 
