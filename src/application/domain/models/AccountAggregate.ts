@@ -4,13 +4,11 @@ import { Aggregate } from "../../../abstract-domain/Aggregate";
 import { InvariantError } from "../../../abstract-domain/errors/InvariantError";
 
 export default class AccountAggregate extends Aggregate<AccountState> {
-    private _id: number;
     private _username: string;
     private _password: string;
     private _numberOfResets: number;
     constructor(id: number, username: string, password: string) {
-        super();
-        this._id = id;
+        super(id);
         this._username = username;
         this._password = password;
         this.validate();
