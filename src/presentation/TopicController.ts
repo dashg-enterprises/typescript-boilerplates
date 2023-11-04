@@ -8,7 +8,7 @@ import { Post } from "../infrastructure/models/Post";
 
 @controller("/topics")
 export default class TopicController extends BaseHttpController {
-    private _topicService: ITopicService;
+    protected _topicService: ITopicService;
 
     constructor(@inject(TYPES.ITopicService) topicService: ITopicService) {
         super();
@@ -37,13 +37,6 @@ export default class TopicController extends BaseHttpController {
     private getById(request: Request) {
         const topicId = +request.params.id;
         this._topicService.getTopicById(topicId);
-    };
-
-    // Topics subroutes
-    @httpPost("/:id/posts")
-    private addPost(request: Request) {
-        const newPost = request.body as Post;
-        return this._topicService.addPost(newPost);
     };
 }
 

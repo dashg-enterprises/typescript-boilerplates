@@ -7,9 +7,12 @@ import { ITopicService, TopicService } from "./application/services/TopicService
 import { Container, AsyncContainerModule, ContainerModule } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "./TYPES";
+import { IAccountAggregateRepository } from "./infrastructure/repositories/IAccountAggregateRepository";
+import { AccountAggregateRepository } from "./application/domain/repositories/AccountAggregateRepository";
 
 import "./presentation/AccountController";
 import "./presentation/TopicController";
+import "./presentation/PostController";
 
 export default async function loadContainer() {
 
@@ -21,8 +24,7 @@ export default async function loadContainer() {
     });
 
     const domainBindings = new ContainerModule(bind => {
-        bind<IAccountService>(TYPES.IAccountService).to(AccountService);
-        bind<ITopicService>(TYPES.ITopicService).to(TopicService);
+        bind<IAccountAggregateRepository>(TYPES.IAccountAggregateRepository).to(AccountAggregateRepository);
     });
 
     const dbBindings = new AsyncContainerModule(async bind => {
@@ -35,6 +37,7 @@ export default async function loadContainer() {
         }).inRequestScope();
     });
 
+    container.load(domainBindings);
     container.load(serviceBindings);
     await container.loadAsync(dbBindings);
 

@@ -4,9 +4,10 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../TYPES";
 import AccountAggregate from "../models/AccountAggregate";
 import { AccountState } from "../models/state/AccountState";
+import { IAccountAggregateRepository } from "../../../infrastructure/repositories/IAccountAggregateRepository";
 
 @injectable()
-export class AggregateRepository {
+export class AccountAggregateRepository implements IAccountAggregateRepository {
     private _accountRepo: Repository<Account>;
     constructor(@inject(TYPES.AccountDataRepo) accountRepo: Repository<Account>) {
         this._accountRepo = accountRepo;

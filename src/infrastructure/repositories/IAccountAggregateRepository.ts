@@ -1,5 +1,5 @@
 import AccountAggregate from "../../application/domain/models/AccountAggregate";
 
-interface IAggregateRepository {
+export interface IAccountAggregateRepository {
     save(account: AccountAggregate): Promise<AccountAggregate>;
 }

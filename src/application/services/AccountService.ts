@@ -3,7 +3,7 @@ import { Account } from "../../infrastructure/models/Account";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../TYPES";
 import AccountAggregate from "../domain/models/AccountAggregate";
-import { AggregateRepository } from "../domain/repositories/AggregateRepository";
+import { AccountAggregateRepository } from "../domain/repositories/AccountAggregateRepository";
 import { AccountState } from "../domain/models/state/AccountState";
 
 export interface IAccountService {
@@ -12,9 +12,9 @@ export interface IAccountService {
 
 @injectable()
 export class AccountService implements IAccountService {
-    private _aggregateRepo: AggregateRepository;
+    private _aggregateRepo: AccountAggregateRepository;
     constructor(@inject(TYPES.AccountDataRepo) accountRepo: Repository<Account>) {
-        this._aggregateRepo = new AggregateRepository(accountRepo);
+        this._aggregateRepo = new AccountAggregateRepository(accountRepo);
     }
 
     saveAccount(account: Account) {
