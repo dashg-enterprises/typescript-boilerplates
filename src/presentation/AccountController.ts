@@ -1,23 +1,21 @@
 import { BaseHttpController, controller, httpPost } from "inversify-express-utils";
-import { IAccountService } from "../application/services/AccountService";
-import { inject } from "inversify";
 import { Account } from "../infrastructure/models/Account";
 import { Request } from "express";
+import { inject } from "inversify";
 import { TYPES } from "../TYPES";
+import { Repository } from "typeorm";
 
 @controller("/accounts")
 export default class AccountController extends BaseHttpController {
-    private _accountService: IAccountService;
-
-    constructor(@inject(TYPES.IAccountService) accountService: IAccountService) {
+    repo: Repository<Account>;
+    constructor(@inject(TYPES.AccountDataRepo) repo: Repository<Account>) {
         super();
-        this._accountService = accountService;
+        this.repo = repo;
     }
 
     @httpPost("/")
-    private async createAccount(request: Request) {
+    private createAccount(request: Request) {
         const newAccount = request.body as Account;
-        const savedAccount = await this._accountService.saveAccount(newAccount);
-        return savedAccount;
+        return this.repo.save(newAccount);
     }
 }

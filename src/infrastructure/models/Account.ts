@@ -1,5 +1,4 @@
 import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from "typeorm";
-import { Topic } from "./Topic";
 
 @Entity()
 export class Account {
@@ -9,6 +8,6 @@ export class Account {
     username: string;
     @Column()
     password: string;
-    @OneToMany(() => Topic, (topic) => topic.account)
-    topics: Topic[];
+    // @OneToMany(() => Purchase, (purchase) => purchase.account)
+    // purchases: Purchase[];
 }
