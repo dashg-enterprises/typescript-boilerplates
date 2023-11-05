@@ -1,24 +1,15 @@
 import "reflect-metadata";
-import db from "./infrastructure/db";
-import { Account } from "./infrastructure/models/Account";
-import { Container, AsyncContainerModule } from "inversify";
-import { Repository } from "typeorm";
+import { Container } from "inversify";
 import { TYPES } from "./TYPES";
+import { IUtensil } from "./example/IUtensil";
+import { Spoon } from "./example/Spoon";
+import { Knife } from "./example/Knife";
+import { Fork } from "./example/Fork";
+import { FoodCritic, IHungryDiner } from "./example/FoodCritic";
 
-import "./presentation/AccountController";
-
-export default async function loadContainer() {
-
+export default function getContainer() {
     const container = new Container();
-
-    const dbBindings = new AsyncContainerModule(async bind => {
-        const connectedDb = await db.initialize();
-        bind<Repository<Account>>(TYPES.AccountDataRepo).toDynamicValue(() => {
-            return connectedDb.getRepository(Account);
-        }).inRequestScope();
-    });
-
-    await container.loadAsync(dbBindings);
-
+    container.bind<IUtensil>(TYPES.IUtensil).to(Fork);
+    container.bind<IHungryDiner>(TYPES.IHungryDiner).to(FoodCritic);
     return container;
 }

@@ -1,3 +1,4 @@
 export const TYPES = {
-    AccountDataRepo: "Repository<Account>",
+    IUtensil: "IUtensil",
+    IHungryDiner: "IHungryDiner"
 }
