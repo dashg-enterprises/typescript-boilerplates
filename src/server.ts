@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import { InversifyExpressServer } from "inversify-express-utils";
 
-import "./presentation/AccountController";
 import loadContainer from "./inversify.config";
 
 loadContainer().then(container => {
