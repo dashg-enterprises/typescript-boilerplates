@@ -1,37 +1,51 @@
 import React, { PureComponent } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts';
 
-export type DataPoint = {
+export type DataPointProp = {
     x: number,
     y: number,
 }
 
-export interface ChartProps {
-    data: DataPoint[];
-    xAxisLabel: string;
-    yAxisLabel: string;
+export type LineProps = {
+    name: string;
+    data: DataPointProp[];
 }
 
-export function Chart(props) {
+export interface ChartProps {
+    line: LineProps;
+    moreLines?: LineProps[];
+    xAxisLabel: string;
+    yAxisLabel: string;
+    xAxisUnits: string;
+    yAxisUnits: string;
+}
+
+export function Chart(props: ChartProps) {
 
     return <ResponsiveContainer width="100%" height="100%">
         <LineChart
             width={500}
             height={300}
-            data={props.data}
+            data={props.line.data}
             margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
+                top: 10,
+                right: 10,
+                left: 70,
+                bottom: 40,
             }}
         >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" dataKey="x" label={props.xAxisLabel}/>
-            <YAxis label={props.yAxisLabel}/>
+            <XAxis unit={` ${props.xAxisUnits}`}>
+                <Label value={props.xAxisLabel} position="center" dy={20}/>
+            </XAxis>
+            <YAxis unit={` ${props.yAxisUnits}`}>
+                <Label value={props.yAxisLabel} position="center" dx={-50}/>
+            </YAxis>
             <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="y" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <Legend layout="vertical" verticalAlign="middle" align="right" y={props.yAxisLabel} margin={{left: 50}}/>
+            <Line name={props.line.name} type="monotone" dataKey="y" stroke="#8884d8" activeDot={{ r: 8 }} data={props.line.data}/>
+            {/* {props.moreLines?.map(line => <Line name={line.name} type="monotone" dataKey="y" stroke="#8884d8" activeDot={{ r: 8 }} data={line.data}/>)} */}
+            
         </LineChart>
     </ResponsiveContainer>
 }
