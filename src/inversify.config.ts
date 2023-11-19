@@ -3,6 +3,7 @@ import { Account } from "./infrastructure/models/Account";
 import { Container, AsyncContainerModule } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "./TYPES";
+import { AccountService, IAccountService } from "./application/AccountService";
 
 import "./presentation/AccountController";
 
@@ -10,13 +11,15 @@ export default async function loadContainer() {
 
     const container = new Container();
 
-    // container.bind<IExample>(TYPES.IExample).to(ParticularExample);
+    container.bind<IAccountService>(TYPES.IAccountService).to(AccountService);
 
     const dbBindings = new AsyncContainerModule(async bind => {
         const connectedDb = await db.initialize();
+
         bind<Repository<Account>>(TYPES.AccountDataRepo).toDynamicValue(() => {
             return connectedDb.getRepository(Account);
         }).inRequestScope();
+        
     });
 
     await container.loadAsync(dbBindings);

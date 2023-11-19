@@ -14,6 +14,14 @@ loadContainer().then(container => {
         }));
     });
 
+    inversifyWrapper.setErrorConfig(app => {
+        app.use((error, req, res, next) => {
+            if (error.type == "DomainError") {
+                return res.status(409).statusMessage(error.message);
+            }
+        });
+    })
+
     const app = inversifyWrapper.build();
 
     app.listen(3000, () => {
