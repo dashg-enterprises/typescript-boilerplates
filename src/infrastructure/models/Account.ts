@@ -1,5 +1,6 @@
 import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from "typeorm";
 
+// Data model
 @Entity()
 export class Account {
     @PrimaryGeneratedColumn()

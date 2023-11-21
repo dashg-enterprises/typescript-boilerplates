@@ -1,7 +1,10 @@
+// Domain model
 export class AccountAggregate {
+    private id?: number;
     private username: string;
     private password: string;
-    constructor(username, password) {
+    constructor(username, password, id = null) {
+        this.id = id;
         this.username = username;
         this.setPassword(password);
     }
@@ -14,6 +17,7 @@ export class AccountAggregate {
 
     getState() {
         return {
+            id: this.id,
             username: this.username,
             password: this.password
         }
