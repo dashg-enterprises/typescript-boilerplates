@@ -4,11 +4,13 @@ import { data, velocityInFreeFall } from "./data";
 
 import { useAppSelector, useAppDispatch } from '../state/hooks'
 import { todoAdded, todoToggled } from '../state/appSlice'
+import { loadData } from "../state/side-effects/appThunk";
 
 export function App(props) {
     const [inputText, setInputText] = useState("");
     const [todoId, setTodoId] = useState(0);
     const todos = useAppSelector(s => s.app.todos);
+    const stuff = useAppSelector(s => s.app.exampleData);
     const dispatch = useAppDispatch();
     return <div>
         <h1>Welcome to our website!</h1>
@@ -33,6 +35,8 @@ export function App(props) {
         {todos.map(todo => <li>
             {todo.text} <input type="checkbox" checked={todo.completed} onChange={e => dispatch(todoToggled({id: todo.id}))}/>
         </li>)}
+        <button onClick={e => dispatch(loadData("", ""))}>Load data!</button>
+        {JSON.stringify(stuff)}
         
     </div>;
 }

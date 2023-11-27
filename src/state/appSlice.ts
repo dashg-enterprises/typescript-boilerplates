@@ -8,10 +8,12 @@ type ToDo = {
 
 type AppState = {
   todos: ToDo[];
+  exampleData: any;
 }
 
 const initialState: AppState = {
-  todos: []
+  todos: [],
+  exampleData: {}
 }
 
 const appSlice = createSlice({
@@ -32,10 +34,13 @@ const appSlice = createSlice({
       if (matchingTodo) {
         matchingTodo.completed = !matchingTodo.completed;
       }
+    },
+    dataLoaded(state, action: PayloadAction<any>) {
+      state.exampleData = action.payload;
     }
   }
 });
 
-export const { todoAdded, todoToggled } = appSlice.actions;
+export const { todoAdded, todoToggled, dataLoaded } = appSlice.actions;
 
 export default appSlice;
