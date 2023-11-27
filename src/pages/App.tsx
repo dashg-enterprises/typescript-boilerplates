@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Chart } from "../components/Chart";
 import { data, velocityInFreeFall } from "./data";
 
+import { useAppSelector, useAppDispatch } from '../state/hooks'
+import { todoAdded, todoToggled } from '../state/appSlice'
+
 export function App(props) {
+    const [inputText, setInputText] = useState("");
+    const [todoId, setTodoId] = useState(0);
+    const todos = useAppSelector(s => s.app.todos);
+    const dispatch = useAppDispatch();
     return <div>
         <h1>Welcome to our website!</h1>
         <button>Click me</button>
@@ -16,6 +23,16 @@ export function App(props) {
                 yAxisUnits="m/s"
             />
         </div>
+        <input value={inputText} onChange={e => {
+            setInputText(e.target.value);
+            setTodoId(todoId + 1);
+        }}/>
+        <button onClick={e => {
+            dispatch(todoAdded({id: todoId, text: inputText}));
+        }}>Try this!</button>
+        {todos.map(todo => <li>
+            {todo.text} <input type="checkbox" checked={todo.completed} onChange={e => dispatch(todoToggled({id: todo.id}))}/>
+        </li>)}
         
     </div>;
 }
