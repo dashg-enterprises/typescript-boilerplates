@@ -1,7 +1,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../TYPES";
 import { AccountDto } from "../presentation/models/AccountDto";
-import { AccountAggregate, DomainError } from "./models/AccountAggregate";
+import { AccountAggregate } from "./models/AccountAggregate";
+import { DomainError } from "./models/DomainError";
 import { IAccountAggregateRepo } from "../infrastructure/AccountAggregateRepo";
 
 export interface IAccountService {
@@ -47,6 +48,7 @@ export class AccountService implements IAccountService {
     private mapToDto(account: AccountAggregate) {
         const state = account.getState();
         const dto = new AccountDto();
+        dto.id = state.id;
         dto.name = state.username;
         dto.security = state.password;
         return dto;

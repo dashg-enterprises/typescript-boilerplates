@@ -1,4 +1,6 @@
 import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from "typeorm";
+import { Game } from "./Game";
+import { Invitation } from "./Invitation";
 
 // Data model
 @Entity()
@@ -9,6 +11,8 @@ export class Account {
     username: string;
     @Column()
     password: string;
-    // @OneToMany(() => Purchase, (purchase) => purchase.account)
-    // purchases: Purchase[];
+    @OneToMany(() => Game, (game) => game.account)
+    games?: Game[];
+    @OneToMany(() => Invitation, (invitation) => invitation.account)
+    invitations?: Invitation[];
 }

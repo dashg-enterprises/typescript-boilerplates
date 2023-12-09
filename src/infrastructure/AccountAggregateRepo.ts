@@ -1,4 +1,4 @@
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "../TYPES";
 import { AccountAggregate } from "../application/models/AccountAggregate";
@@ -14,6 +14,7 @@ export interface IAccountAggregateRepo {
     delete(id: number): Promise<boolean>;
 }
 
+@injectable()
 export class AccountAggregateRepo implements IAccountAggregateRepo {
     private readonly dataRepo: Repository<Account>;
     constructor(@inject(TYPES.AccountDataRepo) dataRepo: Repository<Account>) {

@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm";
 import { Account } from "./models/Account";
+import { Game } from "./models/Game";
+import { Invitation } from "./models/Invitation";
 
 const db = new DataSource({
     type: "mssql",
@@ -9,10 +11,12 @@ const db = new DataSource({
     password: "pass",
     database: "Playground",
     entities: [
-        Account
+        Account,
+        Game, 
+        Invitation,
     ],
     logging: true,
-    synchronize: false,
+    synchronize: true,
     options: {
         encrypt: false // please add this for ms sql
     }

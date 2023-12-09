@@ -1,3 +1,5 @@
+import { DomainError } from "./DomainError";
+
 // Domain model
 export class AccountAggregate {
     private id?: number;
@@ -24,6 +26,3 @@ export class AccountAggregate {
     }
 }
 
-export class DomainError extends Error {
-    type: "DomainError"
-}
