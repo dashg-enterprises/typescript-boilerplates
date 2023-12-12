@@ -4,12 +4,11 @@ export class GameAggregate {
     private ownerId: number;
     private name: string;
     private invitations: InvitationEntity[];
-    constructor(name: string, ownerId: number, id: number = null, invitedPlayers: number[] = []) {
+    constructor(name: string, ownerId: number, id: number = null, invitations: InvitationEntity[] = []) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
-        this.invitations = [];
-        invitedPlayers.forEach(invitedPlayer => this.invite(invitedPlayer));
+        this.invitations = invitations;
     }
 
     invite(playerId: number) {

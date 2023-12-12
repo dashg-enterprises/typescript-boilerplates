@@ -24,7 +24,7 @@ export class GameAggregateRepo implements IGameAggregateRepo {
 
     // factory method, just calling constructor for us
     create(name: string, ownerId: number, id: number = null, invitations: InvitationEntity[] = []): GameAggregate {
-        return new GameAggregate(name, ownerId, id, invitations.map(i => i.getState().recipientId));
+        return new GameAggregate(name, ownerId, id, invitations);
     }
 
     async getById(id: number): Promise<GameAggregate> {
