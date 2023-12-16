@@ -1,10 +1,11 @@
+import { Aggregate } from "./Aggregate";
 import { DomainError } from "./DomainError";
+import { IIdentifiable } from "./IIdentifiable";
 
-export class ChessboardAggregate {
-    private id: number;
+export class Chessboard extends Aggregate {
     private tiles: any[];
     constructor(id: number = null, tiles: any[] = []) {
-        this.id = id;
+        super(id);
         this.tiles = tiles;
     }
     move(pieceId: number, tileId: number) {
@@ -12,7 +13,7 @@ export class ChessboardAggregate {
     }
 }
 
-export class PositionValue {
+export class Position {
     readonly x: number;
     readonly y: number;
     constructor(x: number, y: number) {
@@ -21,12 +22,17 @@ export class PositionValue {
     }
 }
 
-export class TileEntity {
-    private id: number;
-    private piece: PieceEntity;
-    private position: PositionValue;
-    occupy(piece: PieceEntity) {
-        if (this.piece) {
+export class Tile implements IIdentifiable {
+    readonly id: number;
+    private piece: Piece;
+    private position: Position;
+    constructor(position: Position, piece: Piece = null, id: number = null) {
+        this.id = id;
+        this.piece = piece;
+        this.position = position;
+    }
+    occupy(piece: Piece) {
+        if (this.isOccupied()) {
             piece.capture(this.piece);
         }
         this.piece = piece;
@@ -34,7 +40,7 @@ export class TileEntity {
     isOccupied() {
         return !!this.piece;
     }
-    distanceFrom(tile: TileEntity): PositionValue {
+    distanceFrom(tile: Tile): Position {
         return {
             x: this.position.x - tile.position.x,
             y: this.position.y - tile.position.y
@@ -42,20 +48,26 @@ export class TileEntity {
     }
 }
 
-export class PieceEntity {
+export enum PieceTypes {
+    Pawn = "Pawn",
+    King = "King"
+}
+
+export class Piece {
     private id: number;
     private type: string;
-    private tile: TileEntity;
-    private captures: PieceEntity[] = [];
-    constructor(id: number = null, type: string = "Pawn") {
+    private tile: Tile;
+    private captures: Piece[] = [];
+    constructor(tile: Tile = null, id: number = null, type: string = PieceTypes.Pawn) {
         this.id = id;
+        this.tile = tile;
         this.type = type;
     }
-    capture(piece: PieceEntity) {
+    capture(piece: Piece) {
         this.captures.push(piece);
     }
-    moveTo(tile: TileEntity) {
-        if (this.type == "Pawn") {
+    moveTo(tile: Tile) {
+        if (this.type == PieceTypes.Pawn) {
             const distance = tile.distanceFrom(this.tile);
             if (distance.y < 0 || distance.x < 0) throw new DomainError("Pawns can't move backwards.");
             if (distance.y > 1 || distance.x > 1) throw new DomainError("Pawns can't move more than one space.");
@@ -63,6 +75,17 @@ export class PieceEntity {
             if (distance.y == 1 && distance.x == 1 && !tile.isOccupied()) throw new DomainError("Pawns can only move diagonally to capture.");
         
             tile.occupy(this);
+            this.tile = tile;
+        } else if (this.type == "Queen") {
+            
+        }
+    }
+    getState() {
+        return {
+            id: this.id, 
+            type: this.type,
+            tile: this.tile,
+            captures: this.captures
         }
     }
 }

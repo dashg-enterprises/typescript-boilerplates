@@ -4,7 +4,7 @@ import { Invitation } from "./Invitation";
 
 // Data model
 @Entity()
-export class Game {
+export class GameData {
     @PrimaryGeneratedColumn()
     id: number;
     @Column()
