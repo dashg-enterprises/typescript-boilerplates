@@ -62,6 +62,7 @@ export class Piece {
         this.id = id;
         this.tile = tile;
         this.type = type;
+        tile?.occupy(this);
     }
     capture(piece: Piece) {
         this.captures.push(piece);
