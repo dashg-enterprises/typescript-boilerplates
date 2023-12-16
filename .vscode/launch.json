@@ -16,6 +16,16 @@
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"
             ]
+        },
+        {
+            "name": "Debug Jest Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["--inspect-brk", "./node_modules/jest/bin/jest.js", "--runInBand", "--coverage", "false"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceRoot}",
+            "sourceMaps": true,
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
