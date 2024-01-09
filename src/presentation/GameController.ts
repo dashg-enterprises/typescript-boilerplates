@@ -13,8 +13,9 @@ export default class GameController extends BaseHttpController {
         this.service = service;
     }
 
-    @httpGet("/")
+    @httpGet("/:id")
     private async getGames(request: Request) {
+        request.
         const Games = await this.service.getAll();
         return Games;
     }

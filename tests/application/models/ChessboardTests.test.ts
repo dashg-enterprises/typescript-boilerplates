@@ -1,10 +1,22 @@
-import { Piece, PieceTypes, Position, Tile } from "../../../src/application/models/ChessboardAggregate";
+import { Piece } from "../../../src/application/models/chess/Piece";
+import { PieceTypes } from "../../../src/application/models/chess/PieceTypes";
+import { Tile } from "../../../src/application/models/chess/Tile";
+import { Position } from "../../../src/application/models/chess/Position";
 import {describe, expect, test} from '@jest/globals';
+
+describe("A queen", () => {
+    test('is constructed when Queen is specified', () => {
+        const piece = new Piece();
+        const typeOfPiece = piece.getState().type;
+        expect(typeOfPiece).toBe(PieceTypes.Queen);
+    });
+});
 
 describe("A pawn", () => {
     test('is the default piece', () => {
         const piece = new Piece();
-        expect(piece.getState().type).toBe(PieceTypes.Pawn);
+        const typeOfPiece = piece.getState().type;
+        expect(typeOfPiece).toBe(PieceTypes.Pawn);
     });
 
     test('begins on the given tile', () => {
@@ -34,6 +46,8 @@ describe("A pawn", () => {
         piece.moveTo(tileDiagonallyRight);
 
         expect(piece.getState().tile).toBe(tileDiagonallyRight);
-        expect(piece.getState().captures.find(capturedPiece => capturedPiece.getState().id == otherPiece.getState().id)).toBe(otherPiece);
+
+        const capturedPiece = piece.getState().captures[0];
+        expect(capturedPiece).toBe(otherPiece);
     });
 })
