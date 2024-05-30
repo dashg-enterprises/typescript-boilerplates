@@ -24,6 +24,8 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
+      - run: echo "${{ secrets.AWS_ACCESS_KEY_ID }}"
+      - run: echo "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
@@ -53,6 +55,6 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{env.STACK_NAME}}
-          template: cicd/ecsv2.yaml
+          template: iac/ecs-cluster-stack.yaml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: "ImageUrl=${{ steps.build-image.outputs.image }}&ApplicationName=${{ env.STACK_NAME }}"
