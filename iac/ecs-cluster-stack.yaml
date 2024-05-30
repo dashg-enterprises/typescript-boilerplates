@@ -1,0 +1,1276 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: An example service that deploys in AWS VPC networking mode
+       on EC2 capacity. Service uses a capacity provider to request
+       EC2 instances to run on. Service runs with networking in private
+       subnets, but still accessible to the internet via a load balancer
+       hosted in public subnets.
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.medium
+    Description: Class of EC2 instance used to host containers. Choose t2 for testing, m5 for general purpose, c5 for CPU intensive services, and r5 for memory intensive services
+    AllowedValues:
+      [
+        "a1.2xlarge",
+        "a1.4xlarge",
+        "a1.large",
+        "a1.medium",
+        "a1.metal",
+        "a1.xlarge",
+        "c1.medium",
+        "c1.xlarge",
+        "c3.2xlarge",
+        "c3.4xlarge",
+        "c3.8xlarge",
+        "c3.large",
+        "c3.xlarge",
+        "c4.2xlarge",
+        "c4.4xlarge",
+        "c4.8xlarge",
+        "c4.large",
+        "c4.xlarge",
+        "c5.12xlarge",
+        "c5.18xlarge",
+        "c5.24xlarge",
+        "c5.2xlarge",
+        "c5.4xlarge",
+        "c5.9xlarge",
+        "c5.large",
+        "c5.metal",
+        "c5.xlarge",
+        "c5a.12xlarge",
+        "c5a.16xlarge",
+        "c5a.24xlarge",
+        "c5a.2xlarge",
+        "c5a.4xlarge",
+        "c5a.8xlarge",
+        "c5a.large",
+        "c5a.xlarge",
+        "c5ad.12xlarge",
+        "c5ad.16xlarge",
+        "c5ad.24xlarge",
+        "c5ad.2xlarge",
+        "c5ad.4xlarge",
+        "c5ad.8xlarge",
+        "c5ad.large",
+        "c5ad.xlarge",
+        "c5d.12xlarge",
+        "c5d.18xlarge",
+        "c5d.24xlarge",
+        "c5d.2xlarge",
+        "c5d.4xlarge",
+        "c5d.9xlarge",
+        "c5d.large",
+        "c5d.metal",
+        "c5d.xlarge",
+        "c5n.18xlarge",
+        "c5n.2xlarge",
+        "c5n.4xlarge",
+        "c5n.9xlarge",
+        "c5n.large",
+        "c5n.metal",
+        "c5n.xlarge",
+        "c6a.12xlarge",
+        "c6a.16xlarge",
+        "c6a.24xlarge",
+        "c6a.2xlarge",
+        "c6a.32xlarge",
+        "c6a.48xlarge",
+        "c6a.4xlarge",
+        "c6a.8xlarge",
+        "c6a.large",
+        "c6a.metal",
+        "c6a.xlarge",
+        "c6g.12xlarge",
+        "c6g.16xlarge",
+        "c6g.2xlarge",
+        "c6g.4xlarge",
+        "c6g.8xlarge",
+        "c6g.large",
+        "c6g.medium",
+        "c6g.metal",
+        "c6g.xlarge",
+        "c6gd.12xlarge",
+        "c6gd.16xlarge",
+        "c6gd.2xlarge",
+        "c6gd.4xlarge",
+        "c6gd.8xlarge",
+        "c6gd.large",
+        "c6gd.medium",
+        "c6gd.metal",
+        "c6gd.xlarge",
+        "c6gn.12xlarge",
+        "c6gn.16xlarge",
+        "c6gn.2xlarge",
+        "c6gn.4xlarge",
+        "c6gn.8xlarge",
+        "c6gn.large",
+        "c6gn.medium",
+        "c6gn.xlarge",
+        "c6i.12xlarge",
+        "c6i.16xlarge",
+        "c6i.24xlarge",
+        "c6i.2xlarge",
+        "c6i.32xlarge",
+        "c6i.4xlarge",
+        "c6i.8xlarge",
+        "c6i.large",
+        "c6i.metal",
+        "c6i.xlarge",
+        "c6id.12xlarge",
+        "c6id.16xlarge",
+        "c6id.24xlarge",
+        "c6id.2xlarge",
+        "c6id.32xlarge",
+        "c6id.4xlarge",
+        "c6id.8xlarge",
+        "c6id.large",
+        "c6id.metal",
+        "c6id.xlarge",
+        "c6in.12xlarge",
+        "c6in.16xlarge",
+        "c6in.24xlarge",
+        "c6in.2xlarge",
+        "c6in.32xlarge",
+        "c6in.4xlarge",
+        "c6in.8xlarge",
+        "c6in.large",
+        "c6in.metal",
+        "c6in.xlarge",
+        "c7g.12xlarge",
+        "c7g.16xlarge",
+        "c7g.2xlarge",
+        "c7g.4xlarge",
+        "c7g.8xlarge",
+        "c7g.large",
+        "c7g.medium",
+        "c7g.metal",
+        "c7g.xlarge",
+        "c7gd.12xlarge",
+        "c7gd.16xlarge",
+        "c7gd.2xlarge",
+        "c7gd.4xlarge",
+        "c7gd.8xlarge",
+        "c7gd.large",
+        "c7gd.medium",
+        "c7gd.xlarge",
+        "c7gn.12xlarge",
+        "c7gn.16xlarge",
+        "c7gn.2xlarge",
+        "c7gn.4xlarge",
+        "c7gn.8xlarge",
+        "c7gn.large",
+        "c7gn.medium",
+        "c7gn.xlarge",
+        "cc2.8xlarge",
+        "cr1.8xlarge",
+        "d2.2xlarge",
+        "d2.4xlarge",
+        "d2.8xlarge",
+        "d2.xlarge",
+        "d3.2xlarge",
+        "d3.4xlarge",
+        "d3.8xlarge",
+        "d3.xlarge",
+        "d3en.12xlarge",
+        "d3en.2xlarge",
+        "d3en.4xlarge",
+        "d3en.6xlarge",
+        "d3en.8xlarge",
+        "d3en.xlarge",
+        "dl1.24xlarge",
+        "f1.16xlarge",
+        "f1.2xlarge",
+        "f1.4xlarge",
+        "g2.2xlarge",
+        "g2.8xlarge",
+        "g3.16xlarge",
+        "g3.4xlarge",
+        "g3.8xlarge",
+        "g3s.xlarge",
+        "g4ad.16xlarge",
+        "g4ad.2xlarge",
+        "g4ad.4xlarge",
+        "g4ad.8xlarge",
+        "g4ad.xlarge",
+        "g4dn.12xlarge",
+        "g4dn.16xlarge",
+        "g4dn.2xlarge",
+        "g4dn.4xlarge",
+        "g4dn.8xlarge",
+        "g4dn.metal",
+        "g4dn.xlarge",
+        "g5.12xlarge",
+        "g5.16xlarge",
+        "g5.24xlarge",
+        "g5.2xlarge",
+        "g5.48xlarge",
+        "g5.4xlarge",
+        "g5.8xlarge",
+        "g5.xlarge",
+        "g5g.16xlarge",
+        "g5g.2xlarge",
+        "g5g.4xlarge",
+        "g5g.8xlarge",
+        "g5g.metal",
+        "g5g.xlarge",
+        "h1.16xlarge",
+        "h1.2xlarge",
+        "h1.4xlarge",
+        "h1.8xlarge",
+        "hpc7g.16xlarge",
+        "hpc7g.4xlarge",
+        "hpc7g.8xlarge",
+        "hs1.8xlarge",
+        "i2.2xlarge",
+        "i2.4xlarge",
+        "i2.8xlarge",
+        "i2.large",
+        "i2.xlarge",
+        "i3.16xlarge",
+        "i3.2xlarge",
+        "i3.4xlarge",
+        "i3.8xlarge",
+        "i3.large",
+        "i3.metal",
+        "i3.xlarge",
+        "i3en.12xlarge",
+        "i3en.24xlarge",
+        "i3en.2xlarge",
+        "i3en.3xlarge",
+        "i3en.6xlarge",
+        "i3en.large",
+        "i3en.metal",
+        "i3en.xlarge",
+        "i4g.16xlarge",
+        "i4g.2xlarge",
+        "i4g.4xlarge",
+        "i4g.8xlarge",
+        "i4g.large",
+        "i4g.xlarge",
+        "i4i.16xlarge",
+        "i4i.2xlarge",
+        "i4i.32xlarge",
+        "i4i.4xlarge",
+        "i4i.8xlarge",
+        "i4i.large",
+        "i4i.metal",
+        "i4i.xlarge",
+        "im4gn.16xlarge",
+        "im4gn.2xlarge",
+        "im4gn.4xlarge",
+        "im4gn.8xlarge",
+        "im4gn.large",
+        "im4gn.xlarge",
+        "inf1.24xlarge",
+        "inf1.2xlarge",
+        "inf1.6xlarge",
+        "inf1.xlarge",
+        "inf2.24xlarge",
+        "inf2.48xlarge",
+        "inf2.8xlarge",
+        "inf2.xlarge",
+        "is4gen.2xlarge",
+        "is4gen.4xlarge",
+        "is4gen.8xlarge",
+        "is4gen.large",
+        "is4gen.medium",
+        "is4gen.xlarge",
+        "m1.large",
+        "m1.medium",
+        "m1.small",
+        "m1.xlarge",
+        "m2.2xlarge",
+        "m2.4xlarge",
+        "m2.xlarge",
+        "m3.2xlarge",
+        "m3.large",
+        "m3.medium",
+        "m3.xlarge",
+        "m4.10xlarge",
+        "m4.16xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m5.12xlarge",
+        "m5.16xlarge",
+        "m5.24xlarge",
+        "m5.2xlarge",
+        "m5.4xlarge",
+        "m5.8xlarge",
+        "m5.large",
+        "m5.metal",
+        "m5.xlarge",
+        "m5a.12xlarge",
+        "m5a.16xlarge",
+        "m5a.24xlarge",
+        "m5a.2xlarge",
+        "m5a.4xlarge",
+        "m5a.8xlarge",
+        "m5a.large",
+        "m5a.xlarge",
+        "m5ad.12xlarge",
+        "m5ad.16xlarge",
+        "m5ad.24xlarge",
+        "m5ad.2xlarge",
+        "m5ad.4xlarge",
+        "m5ad.8xlarge",
+        "m5ad.large",
+        "m5ad.xlarge",
+        "m5d.12xlarge",
+        "m5d.16xlarge",
+        "m5d.24xlarge",
+        "m5d.2xlarge",
+        "m5d.4xlarge",
+        "m5d.8xlarge",
+        "m5d.large",
+        "m5d.metal",
+        "m5d.xlarge",
+        "m5dn.12xlarge",
+        "m5dn.16xlarge",
+        "m5dn.24xlarge",
+        "m5dn.2xlarge",
+        "m5dn.4xlarge",
+        "m5dn.8xlarge",
+        "m5dn.large",
+        "m5dn.metal",
+        "m5dn.xlarge",
+        "m5n.12xlarge",
+        "m5n.16xlarge",
+        "m5n.24xlarge",
+        "m5n.2xlarge",
+        "m5n.4xlarge",
+        "m5n.8xlarge",
+        "m5n.large",
+        "m5n.metal",
+        "m5n.xlarge",
+        "m5zn.12xlarge",
+        "m5zn.2xlarge",
+        "m5zn.3xlarge",
+        "m5zn.6xlarge",
+        "m5zn.large",
+        "m5zn.metal",
+        "m5zn.xlarge",
+        "m6a.12xlarge",
+        "m6a.16xlarge",
+        "m6a.24xlarge",
+        "m6a.2xlarge",
+        "m6a.32xlarge",
+        "m6a.48xlarge",
+        "m6a.4xlarge",
+        "m6a.8xlarge",
+        "m6a.large",
+        "m6a.metal",
+        "m6a.xlarge",
+        "m6g.12xlarge",
+        "m6g.16xlarge",
+        "m6g.2xlarge",
+        "m6g.4xlarge",
+        "m6g.8xlarge",
+        "m6g.large",
+        "m6g.medium",
+        "m6g.metal",
+        "m6g.xlarge",
+        "m6gd.12xlarge",
+        "m6gd.16xlarge",
+        "m6gd.2xlarge",
+        "m6gd.4xlarge",
+        "m6gd.8xlarge",
+        "m6gd.large",
+        "m6gd.medium",
+        "m6gd.metal",
+        "m6gd.xlarge",
+        "m6i.12xlarge",
+        "m6i.16xlarge",
+        "m6i.24xlarge",
+        "m6i.2xlarge",
+        "m6i.32xlarge",
+        "m6i.4xlarge",
+        "m6i.8xlarge",
+        "m6i.large",
+        "m6i.metal",
+        "m6i.xlarge",
+        "m6id.12xlarge",
+        "m6id.16xlarge",
+        "m6id.24xlarge",
+        "m6id.2xlarge",
+        "m6id.32xlarge",
+        "m6id.4xlarge",
+        "m6id.8xlarge",
+        "m6id.large",
+        "m6id.metal",
+        "m6id.xlarge",
+        "m6idn.12xlarge",
+        "m6idn.16xlarge",
+        "m6idn.24xlarge",
+        "m6idn.2xlarge",
+        "m6idn.32xlarge",
+        "m6idn.4xlarge",
+        "m6idn.8xlarge",
+        "m6idn.large",
+        "m6idn.metal",
+        "m6idn.xlarge",
+        "m6in.12xlarge",
+        "m6in.16xlarge",
+        "m6in.24xlarge",
+        "m6in.2xlarge",
+        "m6in.32xlarge",
+        "m6in.4xlarge",
+        "m6in.8xlarge",
+        "m6in.large",
+        "m6in.metal",
+        "m6in.xlarge",
+        "m7a.12xlarge",
+        "m7a.16xlarge",
+        "m7a.24xlarge",
+        "m7a.2xlarge",
+        "m7a.32xlarge",
+        "m7a.48xlarge",
+        "m7a.4xlarge",
+        "m7a.8xlarge",
+        "m7a.large",
+        "m7a.medium",
+        "m7a.metal-48xl",
+        "m7a.xlarge",
+        "m7g.12xlarge",
+        "m7g.16xlarge",
+        "m7g.2xlarge",
+        "m7g.4xlarge",
+        "m7g.8xlarge",
+        "m7g.large",
+        "m7g.medium",
+        "m7g.metal",
+        "m7g.xlarge",
+        "m7gd.12xlarge",
+        "m7gd.16xlarge",
+        "m7gd.2xlarge",
+        "m7gd.4xlarge",
+        "m7gd.8xlarge",
+        "m7gd.large",
+        "m7gd.medium",
+        "m7gd.xlarge",
+        "m7i-flex.2xlarge",
+        "m7i-flex.4xlarge",
+        "m7i-flex.8xlarge",
+        "m7i-flex.large",
+        "m7i-flex.xlarge",
+        "m7i.12xlarge",
+        "m7i.16xlarge",
+        "m7i.24xlarge",
+        "m7i.2xlarge",
+        "m7i.48xlarge",
+        "m7i.4xlarge",
+        "m7i.8xlarge",
+        "m7i.large",
+        "m7i.xlarge",
+        "mac1.metal",
+        "mac2.metal",
+        "p2.16xlarge",
+        "p2.8xlarge",
+        "p2.xlarge",
+        "p3.16xlarge",
+        "p3.2xlarge",
+        "p3.8xlarge",
+        "p3dn.24xlarge",
+        "p4d.24xlarge",
+        "p4de.24xlarge",
+        "p5.48xlarge",
+        "r3.2xlarge",
+        "r3.4xlarge",
+        "r3.8xlarge",
+        "r3.large",
+        "r3.xlarge",
+        "r4.16xlarge",
+        "r4.2xlarge",
+        "r4.4xlarge",
+        "r4.8xlarge",
+        "r4.large",
+        "r4.xlarge",
+        "r5.12xlarge",
+        "r5.16xlarge",
+        "r5.24xlarge",
+        "r5.2xlarge",
+        "r5.4xlarge",
+        "r5.8xlarge",
+        "r5.large",
+        "r5.metal",
+        "r5.xlarge",
+        "r5a.12xlarge",
+        "r5a.16xlarge",
+        "r5a.24xlarge",
+        "r5a.2xlarge",
+        "r5a.4xlarge",
+        "r5a.8xlarge",
+        "r5a.large",
+        "r5a.xlarge",
+        "r5ad.12xlarge",
+        "r5ad.16xlarge",
+        "r5ad.24xlarge",
+        "r5ad.2xlarge",
+        "r5ad.4xlarge",
+        "r5ad.8xlarge",
+        "r5ad.large",
+        "r5ad.xlarge",
+        "r5b.12xlarge",
+        "r5b.16xlarge",
+        "r5b.24xlarge",
+        "r5b.2xlarge",
+        "r5b.4xlarge",
+        "r5b.8xlarge",
+        "r5b.large",
+        "r5b.metal",
+        "r5b.xlarge",
+        "r5d.12xlarge",
+        "r5d.16xlarge",
+        "r5d.24xlarge",
+        "r5d.2xlarge",
+        "r5d.4xlarge",
+        "r5d.8xlarge",
+        "r5d.large",
+        "r5d.metal",
+        "r5d.xlarge",
+        "r5dn.12xlarge",
+        "r5dn.16xlarge",
+        "r5dn.24xlarge",
+        "r5dn.2xlarge",
+        "r5dn.4xlarge",
+        "r5dn.8xlarge",
+        "r5dn.large",
+        "r5dn.metal",
+        "r5dn.xlarge",
+        "r5n.12xlarge",
+        "r5n.16xlarge",
+        "r5n.24xlarge",
+        "r5n.2xlarge",
+        "r5n.4xlarge",
+        "r5n.8xlarge",
+        "r5n.large",
+        "r5n.metal",
+        "r5n.xlarge",
+        "r6a.12xlarge",
+        "r6a.16xlarge",
+        "r6a.24xlarge",
+        "r6a.2xlarge",
+        "r6a.32xlarge",
+        "r6a.48xlarge",
+        "r6a.4xlarge",
+        "r6a.8xlarge",
+        "r6a.large",
+        "r6a.metal",
+        "r6a.xlarge",
+        "r6g.12xlarge",
+        "r6g.16xlarge",
+        "r6g.2xlarge",
+        "r6g.4xlarge",
+        "r6g.8xlarge",
+        "r6g.large",
+        "r6g.medium",
+        "r6g.metal",
+        "r6g.xlarge",
+        "r6gd.12xlarge",
+        "r6gd.16xlarge",
+        "r6gd.2xlarge",
+        "r6gd.4xlarge",
+        "r6gd.8xlarge",
+        "r6gd.large",
+        "r6gd.medium",
+        "r6gd.metal",
+        "r6gd.xlarge",
+        "r6i.12xlarge",
+        "r6i.16xlarge",
+        "r6i.24xlarge",
+        "r6i.2xlarge",
+        "r6i.32xlarge",
+        "r6i.4xlarge",
+        "r6i.8xlarge",
+        "r6i.large",
+        "r6i.metal",
+        "r6i.xlarge",
+        "r6id.12xlarge",
+        "r6id.16xlarge",
+        "r6id.24xlarge",
+        "r6id.2xlarge",
+        "r6id.32xlarge",
+        "r6id.4xlarge",
+        "r6id.8xlarge",
+        "r6id.large",
+        "r6id.metal",
+        "r6id.xlarge",
+        "r6idn.12xlarge",
+        "r6idn.16xlarge",
+        "r6idn.24xlarge",
+        "r6idn.2xlarge",
+        "r6idn.32xlarge",
+        "r6idn.4xlarge",
+        "r6idn.8xlarge",
+        "r6idn.large",
+        "r6idn.metal",
+        "r6idn.xlarge",
+        "r6in.12xlarge",
+        "r6in.16xlarge",
+        "r6in.24xlarge",
+        "r6in.2xlarge",
+        "r6in.32xlarge",
+        "r6in.4xlarge",
+        "r6in.8xlarge",
+        "r6in.large",
+        "r6in.metal",
+        "r6in.xlarge",
+        "r7g.12xlarge",
+        "r7g.16xlarge",
+        "r7g.2xlarge",
+        "r7g.4xlarge",
+        "r7g.8xlarge",
+        "r7g.large",
+        "r7g.medium",
+        "r7g.metal",
+        "r7g.xlarge",
+        "r7gd.12xlarge",
+        "r7gd.16xlarge",
+        "r7gd.2xlarge",
+        "r7gd.4xlarge",
+        "r7gd.8xlarge",
+        "r7gd.large",
+        "r7gd.medium",
+        "r7gd.xlarge",
+        "r7iz.12xlarge",
+        "r7iz.16xlarge",
+        "r7iz.2xlarge",
+        "r7iz.32xlarge",
+        "r7iz.4xlarge",
+        "r7iz.8xlarge",
+        "r7iz.large",
+        "r7iz.xlarge",
+        "t1.micro",
+        "t2.2xlarge",
+        "t2.large",
+        "t2.medium",
+        "t2.micro",
+        "t2.nano",
+        "t2.small",
+        "t2.xlarge",
+        "t3.2xlarge",
+        "t3.large",
+        "t3.medium",
+        "t3.micro",
+        "t3.nano",
+        "t3.small",
+        "t3.xlarge",
+        "t3a.2xlarge",
+        "t3a.large",
+        "t3a.medium",
+        "t3a.micro",
+        "t3a.nano",
+        "t3a.small",
+        "t3a.xlarge",
+        "t4g.2xlarge",
+        "t4g.large",
+        "t4g.medium",
+        "t4g.micro",
+        "t4g.nano",
+        "t4g.small",
+        "t4g.xlarge",
+        "trn1.2xlarge",
+        "trn1.32xlarge",
+        "trn1n.32xlarge",
+        "u-12tb1.112xlarge",
+        "u-18tb1.112xlarge",
+        "u-24tb1.112xlarge",
+        "u-3tb1.56xlarge",
+        "u-6tb1.112xlarge",
+        "u-6tb1.56xlarge",
+        "u-9tb1.112xlarge",
+        "vt1.24xlarge",
+        "vt1.3xlarge",
+        "vt1.6xlarge",
+        "x1.16xlarge",
+        "x1.32xlarge",
+        "x1e.16xlarge",
+        "x1e.2xlarge",
+        "x1e.32xlarge",
+        "x1e.4xlarge",
+        "x1e.8xlarge",
+        "x1e.xlarge",
+        "x2gd.12xlarge",
+        "x2gd.16xlarge",
+        "x2gd.2xlarge",
+        "x2gd.4xlarge",
+        "x2gd.8xlarge",
+        "x2gd.large",
+        "x2gd.medium",
+        "x2gd.metal",
+        "x2gd.xlarge",
+        "x2idn.16xlarge",
+        "x2idn.24xlarge",
+        "x2idn.32xlarge",
+        "x2idn.metal",
+        "x2iedn.16xlarge",
+        "x2iedn.24xlarge",
+        "x2iedn.2xlarge",
+        "x2iedn.32xlarge",
+        "x2iedn.4xlarge",
+        "x2iedn.8xlarge",
+        "x2iedn.metal",
+        "x2iedn.xlarge",
+        "x2iezn.12xlarge",
+        "x2iezn.2xlarge",
+        "x2iezn.4xlarge",
+        "x2iezn.6xlarge",
+        "x2iezn.8xlarge",
+        "x2iezn.metal",
+        "z1d.12xlarge",
+        "z1d.2xlarge",
+        "z1d.3xlarge",
+        "z1d.6xlarge",
+        "z1d.large",
+        "z1d.metal",
+        "z1d.xlarge",
+      ]
+    ConstraintDescription: Please choose a valid instance type.
+  RDSUsername:
+    Type: String
+    Default: rdsdba
+    Description: The username of the root login for the RDS instance.
+  RDSAllocatedStorage:
+    Type: Number
+    Default: 20
+    Description: The GB of memory (dependent on engine selection) for RDS.
+  RDSEngine: 
+    Type: String
+    Default: sqlserver-ex
+    AllowedValues: [sqlserver-ee, sqlserver-se, sqlserver-ex, sqlserver-web]
+    ConstraintDescription: "Please specify either a sqlserver-ee, sqlserver-se, sqlserver-ex, or sqlserver-web engine for the RDS instance."
+    Description: The specific SQL Server implementation to run on RDS.
+  RDSPortNumber:
+    Description: The port number on which the database accepts connections.
+    Type: Number
+    Default: '1433'
+    MinValue: '1433'
+    MaxValue: '1433'
+    ConstraintDescription: 1150-65535 except for 1434, 3389, 47001, 49152, and 49152
+  DeploymentEnv:
+    Type: String
+    Default: production
+    Description: The name of the environment to deploy
+  ApplicationName:
+    Type: String
+    Default: reimagined-train-redeployments
+    Description: The name of the application that will be used to prefix resources.
+  ImageUrl:
+    Type: String
+    Default: 624626124579.dkr.ecr.us-east-1.amazonaws.com/reimagined-train:healthcheck
+    Description: The URL of the ECR image
+  ContainerCpu:
+    Type: Number
+    Default: 256
+    Description: How much CPU to give the container. 1024 is 1 CPU
+  ContainerMemory:
+    Type: Number
+    Default: 512
+    Description: How much memory in megabytes to give the container
+  ContainerPort:
+    Type: Number
+    Default: 3000
+    Description: What port that the application expects traffic on
+  DesiredCount:
+    Type: Number
+    Default: 1
+    Description: How many copies of the service task to run
+  DesiredCapacity:
+    Type: Number
+    Default: 1
+    Description: Number of EC2 instances to launch in your ECS cluster.
+  MaxSize:
+    Type: Number
+    Default: 4
+    Description: Maximum number of EC2 instances that can be launched in your ECS cluster.
+  ECSAMI:
+    Description: The Amazon Machine Image ID used for the cluster
+    Type: String
+    Default: "ami-00d4cdb3bda21c6ed"
+
+Mappings:
+  # Hard values for the subnet masks. These masks define
+  # the range of internal IP addresses that can be assigned.
+  # The VPC can have all IP's from 10.0.0.0 to 10.0.255.255
+  # There are two subnets which cover the ranges:
+  #
+  # 10.0.0.0 - 10.0.0.255
+  # 10.0.1.0 - 10.0.1.255
+  #
+  # If you need more IP addresses (perhaps you have so many
+  # instances that you run out) then you can customize these
+  # ranges to add more
+  SubnetConfig:
+    VPC:
+      CIDR: '10.0.0.0/16'
+    PublicOne:
+      CIDR: '10.0.0.0/24'
+    PublicTwo:
+      CIDR: '10.0.1.0/24'
+    PrivateOne:
+      CIDR: '10.0.2.0/24'
+    PrivateTwo:
+      CIDR: '10.0.3.0/24' 
+
+
+Resources:
+  # VPC in which containers will be networked.
+  # It has two public subnets
+  # We distribute the subnets across the first two available subnets
+  # for the region, for high availability.
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      CidrBlock: !FindInMap ['SubnetConfig', 'VPC', 'CIDR']
+      Tags:
+        - Key: Name
+          Value:
+            !Join ["-", [!Ref ApplicationName, vpc]]
+
+  # Two public subnets, where containers can have public IP addresses
+  PublicSubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+         Fn::Select:
+         - 0
+         - Fn::GetAZs: {Ref: 'AWS::Region'}
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PublicOne', 'CIDR']
+      MapPublicIpOnLaunch: true
+  PublicSubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+         Fn::Select:
+         - 1
+         - Fn::GetAZs: {Ref: 'AWS::Region'}
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PublicTwo', 'CIDR']
+      MapPublicIpOnLaunch: true
+
+    # Two public subnets, where containers can have public IP addresses
+  PrivateSubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+         Fn::Select:
+         - 0
+         - Fn::GetAZs: {Ref: 'AWS::Region'}
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PrivateOne', 'CIDR']
+  PrivateSubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+         Fn::Select:
+         - 1
+         - Fn::GetAZs: {Ref: 'AWS::Region'}
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PrivateTwo', 'CIDR']
+
+  # ECS Resources
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Join ["-", [!Ref ApplicationName, cluster]]
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+
+  # Role for the EC2 hosts. This allows the ECS agent on the EC2 hosts
+  # to communciate with the ECS control plane, as well as download the docker
+  # images from ECR to run on your host.
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+      Path: /
+      ManagedPolicyArns:
+        # See reference: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        # This managed policy allows us to connect to the instance using SSM
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+
+  # A security group for the EC2 hosts that will run the containers.
+  # This can be used to limit incoming traffic to or outgoing traffic
+  # from the container's host EC2 instance.
+  ContainerHostSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the EC2 hosts that run containers
+      VpcId: !Ref "VPC"
+
+  # The config for each instance that is added to the cluster
+  ContainerInstances:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref ECSAMI
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile:
+          Name: !Ref EC2InstanceProfile
+        SecurityGroupIds:
+          - !Ref ContainerHostSecurityGroup
+        UserData:
+          # This injected configuration file is how the EC2 instance
+          # knows which ECS cluster on your AWS account it should be joining
+          # Fn::Base64: !Sub |
+          #   [settings.ecs]
+          #   cluster = "${ECSCluster}"
+          Fn::Base64: !Sub |
+            #!/bin/bash -xe
+            echo ECS_CLUSTER=${ECSCluster} >> /etc/ecs/ecs.config
+            yum install -y aws-cfn-bootstrap
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource ContainerInstances --configsets full_install --region ${AWS::Region} &
+        # Disable IMDSv1, and require IMDSv2
+        MetadataOptions:
+          HttpEndpoint: enabled
+          HttpTokens: required
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - !Ref EC2Role
+
+  # Autoscaling group. This launches the actual EC2 instances that will register
+  # themselves as members of the cluster, and run the docker containers.
+  ECSAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+    # This is to ensure that the ASG gets deleted first before these
+    # resources, when it comes to stack teardown.
+    - ECSCluster
+    - EC2Role
+    Properties:
+      VPCZoneIdentifier:
+      - !Ref PublicSubnetOne
+      - !Ref PublicSubnetTwo
+      LaunchTemplate:
+        LaunchTemplateId: !Ref ContainerInstances
+        Version: !GetAtt ContainerInstances.LatestVersionNumber
+      MinSize: 0
+      MaxSize: !Ref MaxSize
+      DesiredCapacity: !Ref DesiredCapacity
+      NewInstancesProtectedFromScaleIn: true
+    UpdatePolicy:
+      AutoScalingReplacingUpdate:
+        WillReplace: 'true'
+  
+  # Create an ECS capacity provider to attach the ASG to the ECS cluster
+  # so that it autoscales as we launch more containers
+  CapacityProvider:
+    Type: AWS::ECS::CapacityProvider
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref ECSAutoScalingGroup
+        ManagedScaling:
+          InstanceWarmupPeriod: 60
+          MinimumScalingStepSize: 1
+          MaximumScalingStepSize: 100
+          Status: ENABLED
+          # Percentage of cluster reservation to try to maintain
+          TargetCapacity: 100
+        ManagedTerminationProtection: ENABLED
+
+  # Create a cluster capacity provider assocation so that the cluster
+  # will use the capacity provider
+  CapacityProviderAssociation:
+    Type: AWS::ECS::ClusterCapacityProviderAssociations
+    Properties:
+      CapacityProviders:
+        - !Ref CapacityProvider
+      Cluster: !Ref ECSCluster
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          CapacityProvider: !Ref CapacityProvider
+          Weight: 1
+
+
+  # Setup networking resources for the public subnets. Containers
+  # in the public subnets have public IP addresses and the routing table
+  # sends network traffic via the internet gateway.
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  GatewayAttachement:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref 'VPC'
+      InternetGatewayId: !Ref 'InternetGateway'
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref 'VPC'
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachement
+    Properties:
+      RouteTableId: !Ref 'PublicRouteTable'
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref 'InternetGateway'
+  PublicSubnetOneRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetOne
+      RouteTableId: !Ref PublicRouteTable
+  PublicSubnetTwoRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetTwo
+      RouteTableId: !Ref PublicRouteTable
+
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+
+  # The task definition. This is a simple metadata description of what
+  # container to run, and what resource requirements it has.
+  TaskDefinition:
+    DependsOn: 
+      - ECSTaskExecutionRole
+      - RDSDB
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Join ["-", [!Ref ApplicationName, service]]
+      Cpu: !Ref ContainerCpu
+      Memory: !Ref ContainerMemory
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - EC2
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: !Join ["-", [!Ref ApplicationName, service]]
+          Cpu: !Ref ContainerCpu
+          Memory: !Ref ContainerMemory
+          Image: !Ref ImageUrl
+          Environment:
+            - Name: NODE_ENV
+              Value: !Ref DeploymentEnv 
+            - Name: DBHOST
+              Value: !GetAtt RDSDB.Endpoint.Address 
+            - Name: DBUSERNAME
+              Value: !Ref RDSUsername 
+            - Name: DBPASSWORD
+              Value: rdsdbapass
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              HostPort: !Ref ContainerPort
+          LogConfiguration:
+            LogDriver: 'awslogs'
+            Options:
+              mode: non-blocking
+              max-buffer-size: 25m
+              awslogs-create-group: "true"
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Join ["-", [!Ref ApplicationName, service]]
+              
+
+  # The service. The service is a resource which allows you to run multiple
+  # copies of a type of task, and gather up their logs and metrics, as well
+  # as monitor the number of running tasks and replace any that have crashed
+  Service:
+    Type: AWS::ECS::Service
+  # Avoid race condition between ECS service creation and associating
+  # the target group with the LB
+    DependsOn: PublicLoadBalancerListener
+    Properties:
+      ServiceName: !Join ["-", [!Ref ApplicationName, service]]
+      # DeploymentController: 
+      #   Type: ECS
+      Cluster: !Ref ECSCluster
+      PlacementStrategies:
+        - Field: attribute:ecs.availability-zone
+          Type: spread
+        - Field: cpu
+          Type: binpack
+      CapacityProviderStrategy:
+        - Base: 0
+          CapacityProvider: !Ref CapacityProvider
+          Weight: 1
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups:
+            - !Ref ServiceSecurityGroup
+          Subnets: [!Ref PublicSubnetOne, !Ref PublicSubnetTwo]
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: !Ref DesiredCount
+      TaskDefinition: !Ref TaskDefinition
+      HealthCheckGracePeriodSeconds: 30
+      LoadBalancers:
+        - ContainerName: !Join ["-", [!Ref ApplicationName, service]]
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref ServiceTargetGroup
+
+  # Security group that limits network access
+  # to the task
+  ServiceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for service
+      VpcId: !Ref 'VPC'
+
+  # Keeps track of the list of tasks for the service
+  ServiceTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Port: !Ref ContainerPort
+      Protocol: HTTP
+      UnhealthyThresholdCount: 10
+      VpcId: !Ref 'VPC'
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 0
+
+  # A public facing load balancer, this is used as ingress for
+  # public facing internet traffic.
+  PublicLoadBalancerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the public facing load balancer
+      VpcId: !Ref 'VPC'
+      SecurityGroupIngress:
+        # Allow access to public facing ALB from any IP address
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: -1
+  PublicLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '30'
+      Subnets: [!Ref PublicSubnetOne, !Ref PublicSubnetTwo]
+      SecurityGroups:
+        - !Ref PublicLoadBalancerSG
+  PublicLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: 'forward'
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref ServiceTargetGroup
+                Weight: 100
+      LoadBalancerArn: !Ref 'PublicLoadBalancer'
+      Port: !Ref ContainerPort
+      Protocol: HTTP
+
+  # Open up the service's security group to traffic originating
+  # from the security group of the load balancer.
+  ServiceIngressfromLoadBalancer:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from the public ALB
+      GroupId: !Ref ServiceSecurityGroup
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref 'PublicLoadBalancerSG'
+
+  # This log group stores the stdout logs from this service's containers
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ["-", [!Ref ApplicationName, log-group]]
+
+  # KMSKey:
+  #   Type: AWS::KMS::Key
+  #   Properties:
+  #     BypassPolicyLockoutSafetyCheck: false
+  #     Description: RDS key for reimagined-train
+  #     Enabled: true
+  #     EnableKeyRotation: false
+  #     MultiRegion: false
+
+  # RDSSGIngress:
+  #   Type: AWS::EC2::SecurityGroupIngress
+  #   Properties:
+  #     GroupId: !Ref RDSSecurityGroup
+  #     IpProtocol: tcp
+  #     FromPort: !Ref RDSPortNumber
+  #     ToPort: !Ref RDSPortNumber
+  #     # CidrIp: !GetAtt VPC.CidrBlock
+  #     SourceSecurityGroupId: !Ref ContainerHostSecurityGroup
+
+  # ECSSGEgress:
+  #   Type: AWS::EC2::SecurityGroupEgress
+  #   Properties:
+  #     DestinationSecurityGroupId: !Ref RDSSecurityGroup
+  #     IpProtocol: tcp
+  #     FromPort: !Ref RDSPortNumber
+  #     ToPort: !Ref RDSPortNumber
+  #     GroupId: !Ref ContainerHostSecurityGroup
+
+  SGPublicIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref RDSSecurityGroup
+      FromPort: !Ref RDSPortNumber
+      ToPort: !Ref RDSPortNumber
+      CidrIp: 0.0.0.0/0
+      IpProtocol: -1
+
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Secures the RDS Instance within the VPC
+      VpcId: !Ref "VPC"
+
+  RDSSubnetGroup: 
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Places the RDS Instance inside the VPC's private subnets
+      SubnetIds: 
+        - !Ref PublicSubnetOne
+        - !Ref PublicSubnetTwo
+
+  RDSDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      VPCSecurityGroups:
+        - !GetAtt RDSSecurityGroup.GroupId
+      DBSubnetGroupName: !Ref RDSSubnetGroup
+      AllocatedStorage: !Ref RDSAllocatedStorage
+      DBInstanceClass: db.t3.micro
+      Engine: !Ref RDSEngine
+      LicenseModel: license-included
+      MasterUsername: !Ref RDSUsername
+      MasterUserPassword: rdsdbapass
+      PubliclyAccessible: true
+      # ManageMasterUserPassword: true
+      # MasterUserSecret:
+      #   KmsKeyId: !Ref KMSKey
+    DeletionPolicy: Snapshot
+  
