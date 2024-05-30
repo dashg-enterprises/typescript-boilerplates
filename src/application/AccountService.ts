@@ -1,15 +1,14 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../TYPES";
-import { AccountDto } from "../presentation/models/AccountDto";
 import { DomainError } from "./models/DomainError";
 import { IAccountRepo } from "../infrastructure/AccountRepo";
 import { Account } from "./models/Account";
 
 export interface IAccountService {
-    getAll(): Promise<AccountDto[]>;
-    getById(id: number): Promise<AccountDto>;
-    create(account: AccountDto): Promise<AccountDto>;
-    update(account: AccountDto): Promise<AccountDto>;
+    getAll(): Promise<Account[]>;
+    getById(id: number): Promise<Account>;
+    create(username: string, password: string): Promise<Account>;
+    update(id: number, password: string): Promise<Account>;
     delete(id: number): Promise<boolean>;
 }
 
@@ -19,38 +18,29 @@ export class AccountService implements IAccountService {
     constructor(@inject(TYPES.IAccountRepo) repo: IAccountRepo) {
         this.repo = repo;
     }
-    async getAll(): Promise<AccountDto[]> {
+    async getAll(): Promise<Account[]> {
         const accounts = await this.repo.getAll();
-        return accounts.map(account => this.mapToDto(account));
+        return accounts;
     }
-    async getById(id: number): Promise<AccountDto> {
+    async getById(id: number): Promise<Account> {
         const account = await this.repo.getById(id);
-        return this.mapToDto(account);
+        return account;
     }
 
-    async create(accountDto: AccountDto): Promise<AccountDto> {
-        const account = this.repo.create(accountDto.name, accountDto.security);
+    async create(username: string, password: string): Promise<Account> {
+        const account = new Account(username, password);
         const savedAccount = await this.repo.save(account);
-        return this.mapToDto(savedAccount);
+        return savedAccount;
     }
 
-    async update(accountDto: AccountDto): Promise<AccountDto> {
-        const account = await this.repo.getById(accountDto.id);
-        account.setPassword(accountDto.security);
+    async update(id: number, password: string): Promise<Account> {
+        const account = await this.repo.getById(id);
+        account.setPassword(password);
 
         const savedAccount = await this.repo.save(account);
-        return this.mapToDto(savedAccount);
+        return savedAccount;
     }
     async delete(id: number): Promise<boolean> {
         return await this.repo.delete(id);
-    }
-
-    private mapToDto(account: Account) {
-        const state = account.getState();
-        const dto = new AccountDto();
-        dto.id = state.id;
-        dto.name = state.username;
-        dto.security = state.password;
-        return dto;
     }
 }

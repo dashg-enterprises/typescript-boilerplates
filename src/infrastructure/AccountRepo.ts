@@ -5,9 +5,6 @@ import { AccountData } from "./models/AccountData";
 import { Account } from "../application/models/Account";
 
 export interface IAccountRepo {
-    // factory method -> purpose is to call the constructor
-    create(username: string, password: string, id?: number): Account;
-
     getById(id: number): Promise<Account>;
     getAll(): Promise<Account[]>;
     save(account: Account): Promise<Account>;
@@ -16,36 +13,28 @@ export interface IAccountRepo {
 
 @injectable()
 export class AccountRepo implements IAccountRepo {
-    // private readonly dataRepo: Repository<AccountData>;
-    private readonly data: AccountData[] = [];
-    // constructor(@inject(TYPES.AccountDataRepo) dataRepo: Repository<AccountData>) {
-    //     this.dataRepo = dataRepo;
-    // }
+    private readonly dataRepo: Repository<AccountData>;
 
-    // factory method, just calling constructor for us
-    create(username: string, password: string, id: number = null): Account {
-        return new Account(username, password, id);
+    constructor(@inject(TYPES.AccountDataRepo) dataRepo: Repository<AccountData>) {
+        this.dataRepo = dataRepo;
     }
 
     async getById(id: number): Promise<Account> {
-        // const dataModel = await this.dataRepo.findOneBy({id: id});
-        const dataModel = this.data.find(a => a.id === id);
-        return this.mapToAggregateModel(dataModel);
+        const dataModel = await this.dataRepo.findOneBy({id: id});
+        return this.mapToDomainModel(dataModel);
     }
     async getAll(): Promise<Account[]> {
-        // const dataModels = await this.dataRepo.find();
-        const dataModels = this.data;
-        return dataModels.map(dataModel => this.mapToAggregateModel(dataModel));
+        const dataModels = await this.dataRepo.find();
+        return dataModels.map(dataModel => this.mapToDomainModel(dataModel));
     }
     async save(account: Account): Promise<Account> {
         const dataModel = this.mapToDataModel(account);
-        // const savedDataModel = await this.dataRepo.save(dataModel);
-        this.data.push(dataModel);
-        return this.mapToAggregateModel(dataModel);
+        const savedDataModel = await this.dataRepo.save(dataModel);
+        return this.mapToDomainModel(savedDataModel);
     }
     async delete(id: number): Promise<boolean> {
         try {
-            // await this.dataRepo.delete(id);
+            await this.dataRepo.delete(id);
             return true;
         } catch(error) {
             return false;
@@ -61,8 +50,8 @@ export class AccountRepo implements IAccountRepo {
         return dataModel;
     }
 
-    private mapToAggregateModel(accountData: AccountData) {
-        const account = this.create(accountData.username, accountData.password, accountData.id);
+    private mapToDomainModel(accountData: AccountData) {
+        const account = new Account(accountData.username, accountData.password, accountData.id);
         return account;
     }
 
