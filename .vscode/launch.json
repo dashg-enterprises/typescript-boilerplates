@@ -13,19 +13,12 @@
             ],
             "program": "${workspaceFolder}\\src\\server.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/out/**/*.js"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Example",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\practice\\main.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "env": {
+                "NODE_ENV": "local",
+                "DBHOST": "localhost",
+                "DBUSERNAME": "playground-user",
+                "DBPASSWORD": "pass"
+            },
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"
             ]

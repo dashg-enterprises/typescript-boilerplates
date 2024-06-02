@@ -17,13 +17,13 @@ export default class AccountController extends BaseHttpController {
     @httpGet("/")
     private async getAccounts(request: Request) {
         const accounts = await this.service.getAll();
-        return accounts;
+        return accounts.map(this.mapToDto);
     }
 
     @httpPost("/")
     private async createAccount(@requestBody() accountDto: AccountDto) {
-        const accounts = await this.service.create(accountDto.username, accountDto.password)
-        return accounts;
+        const account = await this.service.create(accountDto.username, accountDto.password)
+        return this.mapToDto(account);
     }
 
     private mapToDto(account: Account) {
