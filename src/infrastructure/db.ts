@@ -1,6 +1,8 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import { AccountData } from "./models/AccountData";
 import { SqlServerConnectionOptions } from "typeorm/driver/sqlserver/SqlServerConnectionOptions";
+import { WishData } from "./models/WishData";
+import { WishlistData } from "./models/WishlistData";
 
 export type DataSourceDetails = {host: string, username: string, password: string};
 
@@ -25,6 +27,8 @@ export async function connectToDb({host, username, password}: DataSourceDetails)
         database: "Playground",
         entities: [
             AccountData,
+            WishData,
+            WishlistData
         ]
     } as SqlServerConnectionOptions);
     
