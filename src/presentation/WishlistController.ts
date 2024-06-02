@@ -1,12 +1,12 @@
-import { BaseHttpController, controller, httpGet, httpPost, requestBody } from "inversify-express-utils";
+import { BaseHttpController, controller, httpGet, httpPost, httpPut, requestBody, requestParam } from "inversify-express-utils";
 import { Request } from "express";
 import { inject } from "inversify";
 import { TYPES } from "../TYPES";
 import { IWishlistService } from "../application/WishlistService";
-import { WishlistDto } from "./models/WishlistDto";
 import { Wishlist } from "../application/models/Wishlist";
+import { WishDto, WishlistDto } from "./models/WishlistDto";
 
-@controller("/wishlists")
+@controller("/accounts/:accountId/wishlists")
 export default class WishlistController extends BaseHttpController {
     service: IWishlistService;
     constructor(@inject(TYPES.IWishlistService) service: IWishlistService) {
@@ -15,14 +15,26 @@ export default class WishlistController extends BaseHttpController {
     }
 
     @httpGet("/")
-    private async getWishlists(request: Request) {
-        const wishlists = await this.service.getAll();
+    private async getWishlists(@requestParam("accountId") accountId: string) {
+        const wishlists = await this.service.getAll(+accountId);
         return wishlists.map(this.mapToDto);
     }
 
     @httpPost("/")
     private async createWishlist(@requestBody() wishlistDto: WishlistDto) {
-        const wishlist = await this.service.create(wishlistDto.username, wishlistDto.password)
+        const wishlist = await this.service.create(wishlistDto.name, wishlistDto.accountId);
+        return this.mapToDto(wishlist);
+    }
+
+    @httpPut("/:id")
+    private async updateWishlist(@requestBody() wishlistDto: WishlistDto) {
+        const wishlist = await this.service.update(wishlistDto.id, wishlistDto.name);
+        return this.mapToDto(wishlist);
+    }
+
+    @httpPost("/:id/wishes")
+    private async addWish(@requestBody() wishDto: WishDto) {
+        const wishlist = await this.service.addWish(wishDto.wishlistId, wishDto.name, wishDto.category, wishDto.price, wishDto.quantity);
         return this.mapToDto(wishlist);
     }
 
@@ -30,8 +42,19 @@ export default class WishlistController extends BaseHttpController {
         const state = wishlist.getState();
         const dto = new WishlistDto();
         dto.id = state.id;
-        dto.username = state.username;
-        dto.password = state.password;
+        dto.name = state.name;
+        dto.accountId = state.accountId;
+        dto.wishes = state.wishes.map(wish => {
+            const wishDto = new WishDto();
+            const wishState = wish.getState();
+            wishDto.id = wishState.id;
+            wishDto.wishlistId = wishState.wishlistId;
+            wishDto.name = wishState.name;
+            wishDto.category = wishState.category;
+            wishDto.price = wishState.price;
+            wishDto.quantity = wishState.quantity;
+            return wishDto;
+        });
         return dto;
     }
 }

@@ -3,12 +3,14 @@ import { TYPES } from "../TYPES";
 import { DomainError } from "./models/DomainError";
 import { IWishlistRepo } from "../infrastructure/WishlistRepo";
 import { Wishlist } from "./models/Wishlist";
+import { Wish } from "./models/Wish";
 
 export interface IWishlistService {
-    getAll(): Promise<Wishlist[]>;
+    getAll(accountId: number): Promise<Wishlist[]>;
     getById(id: number): Promise<Wishlist>;
     create(name: string, accountId: number): Promise<Wishlist>
     update(id: number, name: string): Promise<Wishlist>;
+    addWish(wishlistId: number, name: string, category: string, price?: number, quantity?: number): Promise<Wishlist>;
     delete(id: number): Promise<boolean>;
 }
 
@@ -18,8 +20,8 @@ export class WishlistService implements IWishlistService {
     constructor(@inject(TYPES.IWishlistRepo) repo: IWishlistRepo) {
         this.repo = repo;
     }
-    async getAll(): Promise<Wishlist[]> {
-        const wishlists = await this.repo.getAll();
+    async getAll(accountId: number): Promise<Wishlist[]> {
+        const wishlists = await this.repo.getAll(accountId);
         return wishlists;
     }
     async getById(id: number): Promise<Wishlist> {
@@ -40,6 +42,15 @@ export class WishlistService implements IWishlistService {
         const savedWishlist = await this.repo.save(wishlist);
         return savedWishlist;
     }
+
+    async addWish(wishlistId: number, name: string, category: string, price?: number, quantity?: number): Promise<Wishlist> {
+        const wishlist = await this.repo.getById(wishlistId);
+        wishlist.addWish(new Wish(wishlistId, name, category, price, quantity));
+
+        const savedWishlist = await this.repo.save(wishlist);
+        return savedWishlist;
+    }
+
     async delete(id: number): Promise<boolean> {
         return await this.repo.delete(id);
     }

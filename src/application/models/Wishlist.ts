@@ -12,6 +12,16 @@ export class Wishlist {
         this.wishes = wishes;
     }
 
+    addWish(wish: Wish) {
+        const matchingWish = this.wishes.find(existingWish => existingWish.isSameWish(wish));
+        if (matchingWish) {
+            matchingWish.incorporate(wish);
+        } else {
+            this.wishes.push(wish);
+        }
+        return this;
+    }
+
     changeName(name: string) {
         this.name = name;
     }

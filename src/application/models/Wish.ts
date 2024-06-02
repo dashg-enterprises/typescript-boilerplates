@@ -14,6 +14,16 @@ export class Wish {
         this.quantity = quantity;
     }
 
+    isSameWish(anotherWish: Wish) {
+        return this.name === anotherWish.name && this.category === anotherWish.category;
+    }
+
+    incorporate(anotherWish: Wish) {
+        if (this.isSameWish(anotherWish)) this.quantity++;
+        
+        return this;
+    }
+
     getState() {
         return {
             id: this.id,

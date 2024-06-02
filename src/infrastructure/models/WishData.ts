@@ -17,5 +17,5 @@ export class WishData {
     quantity?: number;
 
     @ManyToOne(() => WishlistData, wishlist => wishlist.wishes)
-    wishlist: WishlistData[];
+    wishlist: WishlistData;
 }

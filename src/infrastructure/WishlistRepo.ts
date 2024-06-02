@@ -8,7 +8,7 @@ import { Wish } from "../application/models/Wish";
 
 export interface IWishlistRepo {
     getById(id: number): Promise<Wishlist>;
-    getAll(): Promise<Wishlist[]>;
+    getAll(accountId: number): Promise<Wishlist[]>;
     save(wishlist: Wishlist): Promise<Wishlist>;
     delete(id: number): Promise<boolean>;
 }
@@ -25,15 +25,22 @@ export class WishlistRepo implements IWishlistRepo {
         const dataModel = await this.dataRepo.findOneBy({id: id});
         return this.mapToDomainModel(dataModel);
     }
-    async getAll(): Promise<Wishlist[]> {
-        const dataModels = await this.dataRepo.find();
+
+    async getAll(accountId: number): Promise<Wishlist[]> {
+        const dataModels = await this.dataRepo.find({
+            where: {
+                accountId
+            }
+        });
         return dataModels.map(dataModel => this.mapToDomainModel(dataModel));
     }
+
     async save(wishlist: Wishlist): Promise<Wishlist> {
         const dataModel = this.mapToDataModel(wishlist);
         const savedDataModel = await this.dataRepo.save(dataModel);
         return this.mapToDomainModel(savedDataModel);
     }
+
     async delete(id: number): Promise<boolean> {
         try {
             await this.dataRepo.delete(id);
@@ -53,6 +60,7 @@ export class WishlistRepo implements IWishlistRepo {
             const wishData = new WishData();
             const wishState = wish.getState();
             wishData.id = wishState.id;
+            wishData.wishlistId = wishState.wishlistId;
             wishData.name = wishState.name;
             wishData.category = wishState.category;
             wishData.price = wishState.price;
@@ -64,7 +72,7 @@ export class WishlistRepo implements IWishlistRepo {
 
     private mapToDomainModel(wishlistData: WishlistData) {
         const wishes = wishlistData.wishes.map(wishData => {
-            return new Wish(wishData.wishlistId, wishData.name, wishData.category, wishData.price, wishData.quantity);
+            return new Wish(wishData.wishlistId, wishData.name, wishData.category, wishData.price, wishData.quantity, wishData.id);
         });
         const wishlist = new Wishlist(wishlistData.accountId, wishlistData.name, wishes, wishlistData.id);
         return wishlist;
