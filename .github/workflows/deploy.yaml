@@ -10,7 +10,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REGISTRY: 624626124579.dkr.ecr.us-east-1.amazonaws.com                   
   ECR_REPOSITORY: dashg-template-builds
-  APPLICATION_NAME: dashg-template
+  APPLICATION_NAME: dashg-keyed-template
 
 jobs:
   deploy:

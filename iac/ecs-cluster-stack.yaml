@@ -877,6 +877,8 @@ Resources:
   # ECS Resources
   ECSCluster:
     Type: AWS::ECS::Cluster
+    DependsOn:
+      - VPC
     Properties:
       ClusterName: !Join ["-", [!Ref ApplicationName, cluster]]
       ClusterSettings:
@@ -927,9 +929,6 @@ Resources:
         UserData:
           # This injected configuration file is how the EC2 instance
           # knows which ECS cluster on your AWS account it should be joining
-          # Fn::Base64: !Sub |
-          #   [settings.ecs]
-          #   cluster = "${ECSCluster}"
           Fn::Base64: !Sub |
             #!/bin/bash -xe
             echo ECS_CLUSTER=${ECSCluster} >> /etc/ecs/ecs.config
@@ -955,6 +954,7 @@ Resources:
     # resources, when it comes to stack teardown.
     - ECSCluster
     - EC2Role
+    - VPC
     Properties:
       VPCZoneIdentifier:
       - !Ref PublicSubnetOne
@@ -990,6 +990,9 @@ Resources:
   # will use the capacity provider
   CapacityProviderAssociation:
     Type: AWS::ECS::ClusterCapacityProviderAssociations
+    DependsOn:
+      - Cluster
+      - CapacityProvider
     Properties:
       CapacityProviders:
         - !Ref CapacityProvider
@@ -1053,6 +1056,7 @@ Resources:
   TaskDefinition:
     DependsOn: 
       - ECSTaskExecutionRole
+      - ECSCluster
       - RDSDB
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -1075,8 +1079,10 @@ Resources:
               Value: !GetAtt RDSDB.Endpoint.Address 
             - Name: DBUSERNAME
               Value: !Ref RDSUsername 
-            - Name: DBPASSWORD
-              Value: rdsdbapass
+            - Name: DBSECRETNAME
+              Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
+            # - Name: DBPASSWORD
+            #   Value: rdsdbapass
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               HostPort: !Ref ContainerPort
@@ -1098,11 +1104,11 @@ Resources:
     Type: AWS::ECS::Service
   # Avoid race condition between ECS service creation and associating
   # the target group with the LB
-    DependsOn: PublicLoadBalancerListener
+    DependsOn: 
+      - PublicLoadBalancerListener
+      - VPC
     Properties:
       ServiceName: !Join ["-", [!Ref ApplicationName, service]]
-      # DeploymentController: 
-      #   Type: ECS
       Cluster: !Ref ECSCluster
       PlacementStrategies:
         - Field: attribute:ecs.availability-zone
@@ -1205,14 +1211,13 @@ Resources:
     Properties:
       LogGroupName: !Join ["-", [!Ref ApplicationName, log-group]]
 
-  # KMSKey:
-  #   Type: AWS::KMS::Key
-  #   Properties:
-  #     BypassPolicyLockoutSafetyCheck: false
-  #     Description: RDS key for reimagined-train
-  #     Enabled: true
-  #     EnableKeyRotation: false
-  #     MultiRegion: false
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      BypassPolicyLockoutSafetyCheck: false
+      Enabled: true
+      EnableKeyRotation: false
+      MultiRegion: false
 
   # RDSSGIngress:
   #   Type: AWS::EC2::SecurityGroupIngress
@@ -1267,10 +1272,10 @@ Resources:
       Engine: !Ref RDSEngine
       LicenseModel: license-included
       MasterUsername: !Ref RDSUsername
-      MasterUserPassword: rdsdbapass
+      # MasterUserPassword: rdsdbapass
       PubliclyAccessible: true
-      # ManageMasterUserPassword: true
-      # MasterUserSecret:
-      #   KmsKeyId: !Ref KMSKey
+      ManageMasterUserPassword: true
+      MasterUserSecret:
+        KmsKeyId: !Ref KMSKey
     DeletionPolicy: Snapshot
   
