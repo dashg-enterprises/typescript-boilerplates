@@ -991,7 +991,7 @@ Resources:
   CapacityProviderAssociation:
     Type: AWS::ECS::ClusterCapacityProviderAssociations
     DependsOn:
-      - Cluster
+      - ECSCluster
       - CapacityProvider
     Properties:
       CapacityProviders:
