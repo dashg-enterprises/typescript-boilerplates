@@ -25,13 +25,13 @@ export async function getDbDetails() {
 
     try {
         console.log(process.env.DBSECRETNAME);
-        response = await Promise.race([client.send(
+        response = await client.send(
             new GetSecretValueCommand({
                 SecretId: process.env.DBSECRETNAME,
                 
                 VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
             })
-        )]);
+        );
     } catch (error) {
         // For a list of exceptions thrown, see
         // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
