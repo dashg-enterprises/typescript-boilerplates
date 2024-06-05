@@ -733,6 +733,9 @@ Parameters:
     Type: String
     Default: rdsdba
     Description: The username of the root login for the RDS instance.
+  RDSPassword:
+    Type: String
+    Description: The password of the root login for the RDS instance.
   RDSAllocatedStorage:
     Type: Number
     Default: 20
@@ -965,7 +968,7 @@ Resources:
       MinSize: 0
       MaxSize: !Ref MaxSize
       DesiredCapacity: !Ref DesiredCapacity
-      NewInstancesProtectedFromScaleIn: true
+      NewInstancesProtectedFromScaleIn: false
     UpdatePolicy:
       AutoScalingReplacingUpdate:
         WillReplace: 'true'
@@ -1097,10 +1100,10 @@ Resources:
               Value: !GetAtt RDSDB.Endpoint.Address 
             - Name: DBUSERNAME
               Value: !Ref RDSUsername 
-            - Name: DBSECRETNAME
-              Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
-            # - Name: DBPASSWORD
-            #   Value: rdsdbapass
+            # - Name: DBSECRETNAME
+            #   Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
+            - Name: DBPASSWORD
+              Value: !Ref RDSPassword
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               HostPort: !Ref ContainerPort
@@ -1229,13 +1232,13 @@ Resources:
     Properties:
       LogGroupName: !Join ["-", [!Ref ApplicationName, log-group]]
 
-  KMSKey:
-    Type: AWS::KMS::Key
-    Properties:
-      BypassPolicyLockoutSafetyCheck: false
-      Enabled: true
-      EnableKeyRotation: false
-      MultiRegion: false
+  # KMSKey:
+  #   Type: AWS::KMS::Key
+  #   Properties:
+  #     BypassPolicyLockoutSafetyCheck: false
+  #     Enabled: true
+  #     EnableKeyRotation: false
+  #     MultiRegion: false
 
   # RDSSGIngress:
   #   Type: AWS::EC2::SecurityGroupIngress
@@ -1290,10 +1293,10 @@ Resources:
       Engine: !Ref RDSEngine
       LicenseModel: license-included
       MasterUsername: !Ref RDSUsername
-      # MasterUserPassword: rdsdbapass
+      MasterUserPassword: !Ref RDSPassword
       PubliclyAccessible: true
-      ManageMasterUserPassword: true
-      MasterUserSecret:
-        KmsKeyId: !Ref KMSKey
+      # ManageMasterUserPassword: true
+      # MasterUserSecret:
+      #   KmsKeyId: !Ref KMSKey
     DeletionPolicy: Snapshot
   
