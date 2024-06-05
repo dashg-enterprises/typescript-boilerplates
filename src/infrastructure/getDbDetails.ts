@@ -19,6 +19,8 @@ export async function getDbDetails() {
         region: "us-east-1",
     });
 
+    console.log("creds", await client.config.credentials());
+
     let response;
 
     try {
@@ -29,15 +31,13 @@ export async function getDbDetails() {
                 
                 VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
             })
-        ), promiseTimeout(30000).then(() => {
-            throw new Error("Lost the race");
-        })]);
+        )]);
     } catch (error) {
-        console.log("Gonna log an error");
         // For a list of exceptions thrown, see
         // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        console.error(error.message);
         console.error(error);
-        console.log(error);
+        console.log(JSON.stringify(error));
         throw error;
     }
 
