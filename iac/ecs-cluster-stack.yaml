@@ -8,7 +8,7 @@ Description: An example service that deploys in AWS VPC networking mode
 Parameters:
   InstanceType:
     Type: String
-    Default: t2.medium
+    Default: t2.micro
     Description: Class of EC2 instance used to host containers. Choose t2 for testing, m5 for general purpose, c5 for CPU intensive services, and r5 for memory intensive services
     AllowedValues:
       [
@@ -759,19 +759,19 @@ Parameters:
     Description: The name of the environment to deploy
   ApplicationName:
     Type: String
-    Default: reimagined-train-redeployments
+    Default: dashg-templates
     Description: The name of the application that will be used to prefix resources.
   ImageUrl:
     Type: String
-    Default: 624626124579.dkr.ecr.us-east-1.amazonaws.com/reimagined-train:healthcheck
+    Default: 624626124579.dkr.ecr.us-east-1.amazonaws.com/dashg-template-builds:healthcheck
     Description: The URL of the ECR image
   ContainerCpu:
     Type: Number
-    Default: 256
+    Default: 124
     Description: How much CPU to give the container. 1024 is 1 CPU
   ContainerMemory:
     Type: Number
-    Default: 512
+    Default: 256
     Description: How much memory in megabytes to give the container
   ContainerPort:
     Type: Number
