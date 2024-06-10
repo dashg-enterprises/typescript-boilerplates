@@ -1293,8 +1293,8 @@ Resources:
       Engine: !Ref RDSEngine
       LicenseModel: license-included
       MasterUsername: !Ref RDSUsername
-      MasterUserPassword: !Ref RDSPassword
-      # PubliclyAccessible: true
+      # MasterUserPassword: !Ref RDSPassword
+      PubliclyAccessible: true
       ManageMasterUserPassword: true
       MasterUserSecret:
         KmsKeyId: !Ref KMSKey
