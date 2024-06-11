@@ -1124,91 +1124,91 @@ Resources:
         - arn:aws:iam::aws:policy/SecretsManagerReadWrite
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
 
-  # # The task definition. This is a simple metadata description of what
-  # # container to run, and what resource requirements it has.
-  # TaskDefinition:
-  #   DependsOn: 
-  #     - ECSTaskExecutionRole
-  #     - ECSCluster
-  #     - CapacityProviderAssociation
-  #     - RDSDB
-  #   Type: AWS::ECS::TaskDefinition
-  #   Properties:
-  #     Family: !Join ["-", [!Ref ApplicationName, service]]
-  #     Cpu: !Ref ContainerCpu
-  #     Memory: !Ref ContainerMemory
-  #     NetworkMode: awsvpc
-  #     RequiresCompatibilities:
-  #       - EC2
-  #     ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
-  #     TaskRoleArn: !GetAtt ECSTaskContainerRole.Arn
-  #     ContainerDefinitions:
-  #       - Name: !Join ["-", [!Ref ApplicationName, service]]
-  #         Cpu: !Ref ContainerCpu
-  #         Memory: !Ref ContainerMemory
-  #         Image: !Ref ImageUrl
-  #         Environment:
-  #           - Name: NODE_ENV
-  #             Value: !Ref DeploymentEnv 
-  #           - Name: DBHOST
-  #             Value: !GetAtt RDSDB.Endpoint.Address 
-  #           - Name: DBUSERNAME
-  #             Value: !Ref RDSUsername 
-  #           - Name: DBSECRETNAME
-  #             Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
-  #           # - Name: DBPASSWORD
-  #           #   Value: !Ref RDSPassword
-  #         PortMappings:
-  #           - ContainerPort: !Ref ContainerPort
-  #             HostPort: !Ref ContainerPort
-  #         LogConfiguration:
-  #           LogDriver: 'awslogs'
-  #           Options:
-  #             mode: non-blocking
-  #             max-buffer-size: 25m
-  #             awslogs-create-group: "true"
-  #             awslogs-group: !Ref LogGroup
-  #             awslogs-region: !Ref AWS::Region
-  #             awslogs-stream-prefix: !Join ["-", [!Ref ApplicationName, service]]
+  # The task definition. This is a simple metadata description of what
+  # container to run, and what resource requirements it has.
+  TaskDefinition:
+    DependsOn: 
+      - ECSTaskExecutionRole
+      - ECSCluster
+      - CapacityProviderAssociation
+      - RDSDB
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Join ["-", [!Ref ApplicationName, service]]
+      Cpu: !Ref ContainerCpu
+      Memory: !Ref ContainerMemory
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - EC2
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      TaskRoleArn: !GetAtt ECSTaskContainerRole.Arn
+      ContainerDefinitions:
+        - Name: !Join ["-", [!Ref ApplicationName, service]]
+          Cpu: !Ref ContainerCpu
+          Memory: !Ref ContainerMemory
+          Image: !Ref ImageUrl
+          Environment:
+            - Name: NODE_ENV
+              Value: !Ref DeploymentEnv 
+            - Name: DBHOST
+              Value: !GetAtt RDSDB.Endpoint.Address 
+            - Name: DBUSERNAME
+              Value: !Ref RDSUsername 
+            - Name: DBSECRETNAME
+              Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
+            # - Name: DBPASSWORD
+            #   Value: !Ref RDSPassword
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              HostPort: !Ref ContainerPort
+          LogConfiguration:
+            LogDriver: 'awslogs'
+            Options:
+              mode: non-blocking
+              max-buffer-size: 25m
+              awslogs-create-group: "true"
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Join ["-", [!Ref ApplicationName, service]]
               
 
-  # # The service. The service is a resource which allows you to run multiple
-  # # copies of a type of task, and gather up their logs and metrics, as well
-  # # as monitor the number of running tasks and replace any that have crashed
-  # Service:
-  #   Type: AWS::ECS::Service
-  # # Avoid race condition between ECS service creation and associating
-  # # the target group with the LB
-  #   DependsOn: 
-  #     - PublicLoadBalancerListener
-  #     - VPC
-  #   Properties:
-  #     ServiceName: !Join ["-", [!Ref ApplicationName, service]]
-  #     Cluster: !Ref ECSCluster
-  #     PlacementStrategies:
-  #       - Field: attribute:ecs.availability-zone
-  #         Type: spread
-  #       - Field: cpu
-  #         Type: binpack
-  #     CapacityProviderStrategy:
-  #       - Base: 0
-  #         CapacityProvider: !Ref CapacityProvider
-  #         Weight: 1
-  #     NetworkConfiguration:
-  #       AwsvpcConfiguration:
-  #         SecurityGroups:
-  #           - !Ref ServiceSecurityGroup
-  #         Subnets: [!Ref PublicSubnetOne, !Ref PublicSubnetTwo]
-  #     DeploymentConfiguration:
-  #       MaximumPercent: 200
-  #       MinimumHealthyPercent: 100
-  #     DesiredCount: !Ref DesiredCount
-  #     TaskDefinition: !Ref TaskDefinition
-  #     HealthCheckGracePeriodSeconds: 30
-  #     LoadBalancers:
-  #       - ContainerName: !Join ["-", [!Ref ApplicationName, service]]
-  #         ContainerPort: !Ref ContainerPort
-  #         TargetGroupArn: !Ref ServiceTargetGroup
+  # The service. The service is a resource which allows you to run multiple
+  # copies of a type of task, and gather up their logs and metrics, as well
+  # as monitor the number of running tasks and replace any that have crashed
+  Service:
+    Type: AWS::ECS::Service
+  # Avoid race condition between ECS service creation and associating
+  # the target group with the LB
+    DependsOn: 
+      - PublicLoadBalancerListener
+      - VPC
+    Properties:
+      ServiceName: !Join ["-", [!Ref ApplicationName, service]]
+      Cluster: !Ref ECSCluster
+      PlacementStrategies:
+        - Field: attribute:ecs.availability-zone
+          Type: spread
+        - Field: cpu
+          Type: binpack
+      CapacityProviderStrategy:
+        - Base: 0
+          CapacityProvider: !Ref CapacityProvider
+          Weight: 1
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups:
+            - !Ref ServiceSecurityGroup
+          Subnets: [!Ref PublicSubnetOne, !Ref PublicSubnetTwo]
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: !Ref DesiredCount
+      TaskDefinition: !Ref TaskDefinition
+      HealthCheckGracePeriodSeconds: 30
+      LoadBalancers:
+        - ContainerName: !Join ["-", [!Ref ApplicationName, service]]
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref ServiceTargetGroup
 
   # Security group that limits network access
   # to the task
