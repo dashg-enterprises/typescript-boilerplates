@@ -1077,6 +1077,31 @@ Resources:
             Effect: Allow
             Principal:
               Service: ecs-tasks.amazonaws.com
+      Policies:
+        - PolicyName: kms-via-secretsmanager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - kms:Decrypt
+                  - kms:ReEncrypt*
+                  - kms:CreateGrant
+                  - kms:DescribeKey
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
+              - Effect: Allow
+                Action: kms:GenerateDataKey*
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                  StringLike:
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
