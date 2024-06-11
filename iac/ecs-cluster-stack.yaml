@@ -767,7 +767,7 @@ Parameters:
     Description: The URL of the ECR image
   ContainerCpu:
     Type: Number
-    Default: 124
+    Default: 128
     Description: How much CPU to give the container. 1024 is 1 CPU
   ContainerMemory:
     Type: Number
