@@ -1,10 +1,10 @@
 name: CD Step - Deploy to AWS
 
-on:
-  pull_request:
-    branches: 
-      - main
-    types: [closed]
+on: workflow_dispatch
+  # pull_request:
+  #   branches: 
+  #     - main
+  #   types: [closed]
 
 env:
   AWS_REGION: us-east-1
@@ -14,7 +14,7 @@ env:
 
 jobs:
   deploy:
-    if: ${{ github.event.pull_request.merged }}
+    # if: ${{ github.event.pull_request.merged }}
     name: Build, Test, & Deploy
     runs-on: ubuntu-latest
     environment: dev

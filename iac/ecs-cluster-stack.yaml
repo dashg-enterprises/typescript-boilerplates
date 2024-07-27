@@ -8,7 +8,7 @@ Description: An example service that deploys in AWS VPC networking mode
 Parameters:
   InstanceType:
     Type: String
-    Default: t2.medium
+    Default: t2.micro
     Description: Class of EC2 instance used to host containers. Choose t2 for testing, m5 for general purpose, c5 for CPU intensive services, and r5 for memory intensive services
     AllowedValues:
       [
@@ -759,19 +759,19 @@ Parameters:
     Description: The name of the environment to deploy
   ApplicationName:
     Type: String
-    Default: reimagined-train-redeployments
+    Default: dashg-templates
     Description: The name of the application that will be used to prefix resources.
   ImageUrl:
     Type: String
-    Default: 624626124579.dkr.ecr.us-east-1.amazonaws.com/reimagined-train:healthcheck
+    Default: 624626124579.dkr.ecr.us-east-1.amazonaws.com/dashg-template-builds:healthcheck
     Description: The URL of the ECR image
   ContainerCpu:
     Type: Number
-    Default: 256
+    Default: 128
     Description: How much CPU to give the container. 1024 is 1 CPU
   ContainerMemory:
     Type: Number
-    Default: 512
+    Default: 256
     Description: How much memory in megabytes to give the container
   ContainerPort:
     Type: Number
@@ -785,6 +785,10 @@ Parameters:
     Type: Number
     Default: 1
     Description: Number of EC2 instances to launch in your ECS cluster.
+  MinSize:
+    Type: Number
+    Default: 1
+    Description: Maximum number of EC2 instances that will be kept in your ECS cluster regardless of task requirements.
   MaxSize:
     Type: Number
     Default: 4
@@ -901,6 +905,31 @@ Resources:
             Principal:
               Service: ec2.amazonaws.com
       Path: /
+      Policies:
+        - PolicyName: kms-via-secretsmanager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - kms:Decrypt
+                  - kms:ReEncrypt*
+                  - kms:CreateGrant
+                  - kms:DescribeKey
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
+              - Effect: Allow
+                Action: kms:GenerateDataKey*
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                  StringLike:
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
       ManagedPolicyArns:
         # See reference: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
@@ -965,7 +994,7 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref ContainerInstances
         Version: !GetAtt ContainerInstances.LatestVersionNumber
-      MinSize: 0
+      MinSize: !Ref MinSize
       MaxSize: !Ref MaxSize
       DesiredCapacity: !Ref DesiredCapacity
       NewInstancesProtectedFromScaleIn: false
@@ -1048,6 +1077,31 @@ Resources:
             Effect: Allow
             Principal:
               Service: ecs-tasks.amazonaws.com
+      Policies:
+        - PolicyName: kms-via-secretsmanager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - kms:Decrypt
+                  - kms:ReEncrypt*
+                  - kms:CreateGrant
+                  - kms:DescribeKey
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
+              - Effect: Allow
+                Action: kms:GenerateDataKey*
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                  StringLike:
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
@@ -1064,6 +1118,31 @@ Resources:
             Effect: Allow
             Principal:
               Service: ecs-tasks.amazonaws.com
+      Policies:
+        - PolicyName: kms-via-secretsmanager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - kms:Decrypt
+                  - kms:ReEncrypt*
+                  - kms:CreateGrant
+                  - kms:DescribeKey
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
+              - Effect: Allow
+                Action: kms:GenerateDataKey*
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:CallerAccount: !Ref AWS::AccountId
+                  StringLike:
+                    kms:ViaService: !Sub "secretsmanager.${AWS::Region}.amazonaws.com"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
@@ -1100,10 +1179,10 @@ Resources:
               Value: !GetAtt RDSDB.Endpoint.Address 
             - Name: DBUSERNAME
               Value: !Ref RDSUsername 
-            # - Name: DBSECRETNAME
-            #   Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
-            - Name: DBPASSWORD
-              Value: !Ref RDSPassword
+            - Name: DBSECRETNAME
+              Value: !GetAtt RDSDB.MasterUserSecret.SecretArn
+            # - Name: DBPASSWORD
+            #   Value: !Ref RDSPassword
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               HostPort: !Ref ContainerPort
@@ -1293,10 +1372,9 @@ Resources:
       Engine: !Ref RDSEngine
       LicenseModel: license-included
       MasterUsername: !Ref RDSUsername
-      MasterUserPassword: !Ref RDSPassword
+      # MasterUserPassword: !Ref RDSPassword
       PubliclyAccessible: true
-      # ManageMasterUserPassword: true
-      # MasterUserSecret:
-      #   KmsKeyId: !Ref KMSKey
+      ManageMasterUserPassword: true
+      MasterUserSecret:
+        KmsKeyId: !Ref KMSKey
     DeletionPolicy: Snapshot
-  

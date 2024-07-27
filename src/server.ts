@@ -5,6 +5,9 @@ import { InversifyExpressServer } from "inversify-express-utils";
 
 import loadContainer from "./inversify.config";
 import { DomainError } from "./application/models/DomainError";
+import { getSecret } from "./infrastructure/getSecret";
+
+// getSecret().then(secret => console.log("Wrapped up", secret.username, secret.password));
 
 loadContainer().then(container => {
     const inversifyWrapper = new InversifyExpressServer(container);
