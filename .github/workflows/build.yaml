@@ -27,6 +27,7 @@ jobs:
           path: deploy
           sparse-checkout: |
             terragrunt/bounded-context-initialization
+      - run: ls -R 
       - name: Ensure Bounded Context is initialized
         uses: gruntwork-io/terragrunt-action@v2
         env:
