@@ -55,7 +55,7 @@ locals { // get these as imports to construct DDD API
 # allow this context to be linked to its initialization
 # or vice-versa.
 module "fargate_bounded_context" {
-  source = "git::https://github.com/dashg-enterprises/cloud-platform.git//src/modules/bounded-context/aws?ref=main"
+  source = "git::https://github.com/dashg-enterprises/cloud-platform.git//src/modules/bounded-context/aws/cluster?ref=main"
   aggregate_root_name = local.test_bounded_context.aggregate_root_name
   bounded_context_name = local.test_bounded_context.bounded_context_name
   application_name = local.test_bounded_context.application_name
