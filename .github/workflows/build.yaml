@@ -27,6 +27,14 @@ jobs:
           path: deploy
           sparse-checkout: |
             terragrunt/bounded-context-initialization
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Ensure Bounded Context is initialized
         uses: gruntwork-io/terragrunt-action@v2
         env:
@@ -38,13 +46,7 @@ jobs:
           TF_VERSION: ${{ env.TF_VERSION }}
           TG_VERSION: ${{ env.TG_VERSION }}
           tg_dir: ${{ env.TG_DIR }}
-          tg_command: 'apply --terragrunt-source ../../../../..//iac/initialization'
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          tg_command: 'apply --terragrunt-source ../../..//iac/initialization'
 
       - name: Login to Amazon ECR
         id: login-ecr
