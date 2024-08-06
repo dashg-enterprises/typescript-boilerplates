@@ -39,7 +39,7 @@ jobs:
           TF_VERSION: ${{ env.TF_VERSION }}
           TG_VERSION: ${{ env.TG_VERSION }}
           tg_dir: ${{ env.TG_DIR }}
-          tg_command: 'apply --terragrunt-source ../../../../..//iac/initialization'
+          tg_command: 'apply --terragrunt-source ../../..//iac/initialization'
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
