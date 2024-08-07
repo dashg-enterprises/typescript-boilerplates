@@ -10,6 +10,6 @@ terraform {
 }
 
 module "fargate_bounded_context_initialization" {
-  source = "git::https://github.com/dashg-enterprises/cloud-platform.git//src/modules/bounded-context/aws/initialization?ref=main"
+  source = "git::https://github.com/dashg-enterprises/cloud-platform.git//modules/bounded-context/aws/initialization?ref=main"
   bounded_context_name = "ExampleContext" # need to get this from same place as bounded-context
 }
