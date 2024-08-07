@@ -45,7 +45,7 @@ locals { // get these as imports to construct DDD API
   test_bounded_context = {
     aggregate_root_name  = "Example"
     bounded_context_name = "ExampleContext"
-    application_name     = "ExampleService-${var.environment}"
+    application_name     = "ExampleService-${var.environment_name}"
     application_image    = var.application_image
     vpc = var.vpc
   }
