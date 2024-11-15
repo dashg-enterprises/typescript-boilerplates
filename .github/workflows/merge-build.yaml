@@ -94,8 +94,9 @@ jobs:
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
-        branch: "build/${{ env.ECR_REPOSITORY }}-${{ github.sha }}"
-        token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+        with:
+          branch: "build/${{ env.ECR_REPOSITORY }}-${{ github.sha }}"
+          token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
