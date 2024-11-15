@@ -49,7 +49,7 @@ jobs:
       - name: List files
         run: ls
 
-       name: List files
+      - name: List files in dir
         run: |
           cd deploy/live/aws/_initializations
           ls
