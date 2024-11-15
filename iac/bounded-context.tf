@@ -9,38 +9,6 @@ terraform {
   required_version = ">= 1.2.0"
 }
 
-# module "lambda_module_js" {
-#   source = "../../../modules/bounded-context/aws/serverless"
-
-#   application_name     = "MyFirstBoundedContext-${var.environment}"
-#   aggregate_root_name  = "Print"
-#   bounded_context_name = "PrintContext"
-#   source_code_file     = "index.js"
-#   source_code_folder   = "../../../applications/node"
-#   environment          = var.environment
-
-#   tags = {
-#     Terraform   = "true"
-#     Environment = var.environment
-#   }
-# }
-
-# module "lambda_module_py" {
-#   source = "../../../modules/bounded-context/aws/serverless"
-
-#   application_name     = "MySecondBoundedContext-${var.environment}"
-#   aggregate_root_name  = "Order"
-#   bounded_context_name = "OrderContext"
-#   source_code_file     = "index.py"
-#   source_code_folder   = "../../../applications/python"
-#   environment          = var.environment
-
-#   tags = {
-#     Terraform   = "true"
-#     Environment = var.environment
-#   }
-# }
-
 locals { // get these as imports to construct DDD API
   test_bounded_context = {
     aggregate_root_name  = "Example"
