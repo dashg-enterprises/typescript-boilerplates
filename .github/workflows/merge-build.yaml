@@ -10,6 +10,7 @@ env:
   TG_VERSION: '0.63.6'
   TG_PATH: 'deploy'
   TG_DIR: 'live/aws/_initializations/example-context'
+  TG_APP_DIR: 'live/aws/dev/applications/example-context'
 
 jobs:
   deploy:
@@ -25,7 +26,7 @@ jobs:
         with:
           repository: dashg-enterprises/cloud-deployment
           token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
-          path: deploy
+          path: ${{ env.TG_PATH }}
 
       - uses: actions/setup-go@v5
         with:
@@ -45,18 +46,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: List files
-        run: ls
-
-      - name: List files in dir
-        run: |
-          cd deploy/live/aws/_initializations
-          ls
-          cd ../../../../
-
-      - name: PWD
-        run: pwd
 
       - name: Ensure Bounded Context is initialized
         uses: gruntwork-io/terragrunt-action@v2
@@ -90,10 +79,7 @@ jobs:
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Change directory into deployment repo
-        run: cd deploy/live/aws/dev/applications/example-context
-
-      - name: List files
-        run: ls
+        run: "cd ${{ env.TG_PATH }}/${{ env.TG_APP_DIR }}"
 
       - name: HCL Before
         run: cat terragrunt.hcl | hcledit body get resource.foo.bar
