@@ -8,7 +8,7 @@ env:
   ECR_REPOSITORY: examplecontextimages
   TF_VERSION: '1.9.3'
   TG_VERSION: '0.63.6'
-  TG_PATH: deploy
+  TG_PATH: 'deploy'
   TG_DIR: 'live/aws/_initializations'
 
 jobs:
@@ -37,6 +37,7 @@ jobs:
           cd hcledit/
           make install
           hcledit version
+          cd ../
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
@@ -47,6 +48,12 @@ jobs:
 
       - name: List files
         run: ls
+
+       name: List files
+        run: |
+          cd deploy/live/aws/_initializations
+          ls
+          cd ../../../../
 
       - name: PWD
         run: pwd
