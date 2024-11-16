@@ -81,7 +81,7 @@ jobs:
       - name: Change directory into deployment repo
         run: |
           cd '${{ env.TG_PATH }}/${{ env.TG_APP_DIR }}'
-          cat terragrunt.hcl | hcledit attribute set locals.application_image '"${{ steps.build-image.outputs.image }}"' > terragrunt.hcl
+          hcledit attribute --update --file terragrunt.hcl set locals.application_image '"${{ steps.build-image.outputs.image }}"'
           cat terragrunt.hcl
 
       - name: Create Pull Request
