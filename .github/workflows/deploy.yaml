@@ -12,6 +12,14 @@ on:
           - dev
           - uat
           - prod
+      command:
+        description: "The command to run"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
   # pull_request:
   #   branches: 
   #     - main
@@ -26,7 +34,8 @@ env:
   APPLICATION_NAME: dashg-server-template
   TF_VERSION: '1.9.3'
   TG_VERSION: '0.63.6'
-  TG_DIR: 'deploy/terragrunt/${{ inputs.environment }}/aws/bounded-context'
+  TG_DIR: 'live/aws/${{ inputs.environment }}/applications/example-context'
+  TG_LOCAL_PATH: 'deploy'
 
 jobs:
   deploy:
@@ -43,9 +52,9 @@ jobs:
         with:
           repository: dashg-enterprises/cloud-deployment
           token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
-          path: deploy
+          path: ${{ env.TG_LOCAL_PATH }}
           sparse-checkout: |
-            terragrunt/${{ inputs.environment }}/aws/bounded-context
+            ${{ env.TG_DIR }}
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
@@ -57,11 +66,13 @@ jobs:
         uses: gruntwork-io/terragrunt-action@v2
         env:
           INPUT_PRE_EXEC_1: |
-            git config --global url."https://user:${{secrets.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+            git config --global url."https://user:${{secrets.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises".insteadOf "https://github.com/dashg-enterprises"
           INPUT_PRE_EXEC_2: |
+            git config --global url."https://user:${{secrets.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+          INPUT_PRE_EXEC_3: |
             git config --global --list
         with:
           TF_VERSION: ${{ env.TF_VERSION }}
           TG_VERSION: ${{ env.TG_VERSION }}
-          tg_dir: ${{ env.TG_DIR }}
-          tg_command: 'apply --terragrunt-source ../../../../..//iac'
+          tg_dir: ${{ env.TG_LOCAL_PATH }}/${{ env.TG_DIR }}
+          tg_command: '${{ inputs.command }} --terragrunt-source ../../../../../..//iac'

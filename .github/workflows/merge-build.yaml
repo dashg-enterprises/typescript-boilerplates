@@ -1,6 +1,15 @@
 name: CI Merge Step - PR and Merge to cloud-deployment
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    command:
+      description: "The command to run"
+      required: true
+      default: "apply"
+      type: choice
+      options:
+        - apply
+        - destroy
 
 env:
   AWS_REGION: us-east-1
@@ -8,7 +17,7 @@ env:
   ECR_REPOSITORY: examplecontextimages
   TF_VERSION: '1.9.3'
   TG_VERSION: '0.63.6'
-  TG_PATH: 'deploy'
+  TG_LOCAL_PATH: 'deploy'
   TG_DIR: 'live/aws/_initializations/example-context'
   TG_APP_DIR: 'live/aws/dev/applications/example-context'
 
@@ -26,7 +35,7 @@ jobs:
         with:
           repository: dashg-enterprises/cloud-deployment
           token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
-          path: ${{ env.TG_PATH }}
+          path: ${{ env.TG_LOCAL_PATH }}
 
       - uses: actions/setup-go@v5
         with:
@@ -51,14 +60,16 @@ jobs:
         uses: gruntwork-io/terragrunt-action@v2
         env:
           INPUT_PRE_EXEC_1: |
-            git config --global url."https://user:${{secrets.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+            git config --global url."https://user:${{secrets.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises".insteadOf "https://github.com/dashg-enterprises"
           INPUT_PRE_EXEC_2: |
+            git config --global url."https://user:${{secrets.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+          INPUT_PRE_EXEC_3: |
             git config --global --list
         with:
           TF_VERSION: ${{ env.TF_VERSION }}
           TG_VERSION: ${{ env.TG_VERSION }}
           tg_dir: '${{ env.TG_PATH }}/${{ env.TG_DIR }}'
-          tg_command: 'apply --terragrunt-source ../../../../..//iac/initialization'
+          tg_command: '${{ inputs.command }} --terragrunt-source ../../../../..//iac/initialization'
 
       - name: Login to Amazon ECR
         id: login-ecr
