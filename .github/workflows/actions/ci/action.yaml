@@ -32,8 +32,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
     - name: Checkout cloud-deployment
       uses: actions/checkout@v4
       with:

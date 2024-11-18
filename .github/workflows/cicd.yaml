@@ -41,6 +41,7 @@ jobs:
     name: Build Application Image
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/ci@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
@@ -58,6 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/cd@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
@@ -74,6 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: uat
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/cd@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
