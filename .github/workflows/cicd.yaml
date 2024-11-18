@@ -1,0 +1,101 @@
+name: CI CD Workflow - Build Image and Deploy to Environments
+
+on: 
+  workflow_dispatch:
+    dev:
+      description: "Should deploy to dev"
+      required: true
+      default: true
+      type: boolean
+    uat:
+      description: "Should deploy to uat"
+      required: true
+      default: true
+      type: boolean
+    prod:
+      description: "Should deploy to prod"
+      required: true
+      default: true
+      type: boolean
+    command:
+      description: "The command to run"
+      required: true
+      default: "apply"
+      type: choice
+      options:
+        - apply
+        - destroy
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: examplecontextimages
+  TG_INIT_DIR: 'live/aws/_initializations/example-context'
+  TG_DEV_APP_DIR: 'live/aws/dev/applications/example-context'
+  TG_UAT_APP_DIR: 'live/aws/uat/applications/example-context'
+  TG_PROD_APP_DIR: 'live/aws/prod/applications/example-context'
+  TG_INIT_SOURCE: '../../../../..//iac/initialization'
+  TG_APP_SOURCE: '../../../../../..//iac'
+
+jobs:
+  build:
+    name: Build Application Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: custom-actions/ci@v1
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          TG_SOURCE: ${{ env.TG_INIT_SOURCE }}
+          TG_DIR: ${{ env.TG_INIT_DIR }}
+  deploy-dev:
+    if: ${{ inputs.dev }}
+    needs: build
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: custom-actions/cd@v1
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          TG_SOURCE: ${{ env.TG_APP_SOURCE }}
+          TG_DIR: ${{ env.TG_DEV_APP_DIR }}
+  deploy-uat:
+    if: ${{ inputs.uat }}
+    needs: [build, deploy-dev]
+    name: Deploy to UAT
+    runs-on: ubuntu-latest
+    environment: uat
+    steps:
+      - uses: custom-actions/cd@v1
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          TG_SOURCE: ${{ env.TG_APP_SOURCE }}
+          TG_DIR: ${{ env.TG_UAT_APP_DIR }}
+  deploy-prod:
+    if: ${{ inputs.prod }}
+    needs: [build, deploy-dev, deploy-uat]
+    name: Deploy to Prod
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: custom-actions/cd@v1
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          TG_SOURCE: ${{ env.TG_APP_SOURCE }}
+          TG_DIR: ${{ env.TG_PROD_APP_DIR }}
