@@ -41,7 +41,7 @@ jobs:
     name: Build Application Image
     runs-on: ubuntu-latest
     steps:
-      - uses: custom-actions/ci@v1
+      - uses: ./.github/actions/ci@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-      - uses: custom-actions/cd@v1
+      - uses: ./.github/actions/cd@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: uat
     steps:
-      - uses: custom-actions/cd@v1
+      - uses: ./.github/actions/cd@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     steps:
-      - uses: custom-actions/cd@v1
+      - uses: ./.github/actions/cd@v1
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
