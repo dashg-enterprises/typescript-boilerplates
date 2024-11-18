@@ -36,8 +36,8 @@ runs:
         repository: dashg-enterprises/cloud-deployment
         token: ${{ inputs.CLOUD_DEPLOYMENT_PAT }}
         path: ${{ inputs.TG_LOCAL_PATH }}
-        sparse-checkout: |
-          ${{ inputs.TG_DIR }}
+        # sparse-checkout: |
+        #   ${{ inputs.TG_DIR }}
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
       with:
