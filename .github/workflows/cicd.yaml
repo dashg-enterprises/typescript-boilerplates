@@ -93,6 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
