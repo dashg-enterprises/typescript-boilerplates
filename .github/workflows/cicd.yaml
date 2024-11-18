@@ -22,6 +22,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: examplecontextimages
+  GIT_ORGANIZATION_NAME: dashg-enterprises
   TG_INIT_DIR: 'live/aws/_initializations/example-context'
   TG_DEV_APP_DIR: 'live/aws/dev/applications/example-context'
   TG_UAT_APP_DIR: 'live/aws/uat/applications/example-context'
@@ -45,6 +46,7 @@ jobs:
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           TG_SOURCE: ${{ env.TG_INIT_SOURCE }}
           TG_DIR: ${{ env.TG_INIT_DIR }}
+      
   deploy-dev:
     if: ${{ inputs.dev }}
     needs: build
@@ -53,7 +55,13 @@ jobs:
     environment: dev
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/workflows/cd
+      - uses: ./.github/workflows/actions/commit-build-to-cloud-deployment
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          TG_APP_DIR: ${{ env.TG_DEV_APP_DIR }}
+          APPLICATION_IMAGE: ${{ steps.build-image.outputs.image }}
+          GIT_ORGANIZATION_NAME: ${{ inputs.GIT_ORGANIZATION_NAME }
+      - uses: ./.github/workflows/actions/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -70,7 +78,13 @@ jobs:
     environment: uat
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/workflows/cd
+      - uses: ./.github/workflows/actions/commit-build-to-cloud-deployment
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          TG_APP_DIR: ${{ env.TG_UAT_APP_DIR }}
+          APPLICATION_IMAGE: ${{ steps.build-image.outputs.image }}
+          GIT_ORGANIZATION_NAME: ${{ inputs.GIT_ORGANIZATION_NAME }
+      - uses: ./.github/workflows/actions/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -87,7 +101,13 @@ jobs:
     environment: prod
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/workflows/cd
+      - uses: ./.github/workflows/actions/commit-build-to-cloud-deployment
+        with: 
+          CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          TG_APP_DIR: ${{ env.TG_PROD_APP_DIR }}
+          APPLICATION_IMAGE: ${{ steps.build-image.outputs.image }}
+          GIT_ORGANIZATION_NAME: ${{ inputs.GIT_ORGANIZATION_NAME }
+      - uses: ./.github/workflows/actions/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
