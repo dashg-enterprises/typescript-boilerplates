@@ -1,5 +1,9 @@
 name: CI
 description: Project build action
+outputs:
+  image:
+    description: "Application build image output from CI" 
+    value: ${{ steps.build-image.outputs.image }}
 inputs:
   CLOUD_DEPLOYMENT_PAT:
     description: 'PAT to checkout cloud-deployment'
