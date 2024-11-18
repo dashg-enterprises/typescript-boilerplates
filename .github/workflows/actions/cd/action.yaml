@@ -58,4 +58,4 @@ runs:
         TF_VERSION: ${{ inputs.TF_VERSION }}
         TG_VERSION: ${{ inputs.TG_VERSION }}
         tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
-        tg_command: '${{ inputs.command }} --terragrunt-source ${{ inputs.TG_SOURCE }}'
+        tg_command: '${{ inputs.TG_COMMAND }} --terragrunt-source ${{ inputs.TG_SOURCE }}'
