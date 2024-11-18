@@ -2,29 +2,22 @@ name: CI CD Workflow - Build Image and Deploy to Environments
 
 on: 
   workflow_dispatch:
-    dev:
-      description: "Should deploy to dev"
-      required: true
-      default: true
-      type: boolean
-    uat:
-      description: "Should deploy to uat"
-      required: true
-      default: true
-      type: boolean
-    prod:
-      description: "Should deploy to prod"
-      required: true
-      default: true
-      type: boolean
-    command:
-      description: "The command to run"
-      required: true
-      default: "apply"
-      type: choice
-      options:
-        - apply
-        - destroy
+    inputs:
+      dev:
+        description: "Should deploy to dev"
+        required: true
+        default: true
+        type: boolean
+      uat:
+        description: "Should deploy to uat"
+        required: true
+        default: true
+        type: boolean
+      prod:
+        description: "Should deploy to prod"
+        required: true
+        default: true
+        type: boolean
 
 env:
   AWS_REGION: us-east-1
