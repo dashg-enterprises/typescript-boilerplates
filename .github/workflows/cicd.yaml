@@ -34,6 +34,8 @@ jobs:
   build:
     name: Build Application Image
     runs-on: ubuntu-latest
+    outputs:
+      application_image: ${{ steps.ci.outputs.image }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/workflows/actions/ci
@@ -48,8 +50,6 @@ jobs:
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           TG_SOURCE: ${{ env.TG_INIT_SOURCE }}
           TG_DIR: ${{ env.TG_INIT_DIR }}
-      - outputs:
-          application_image: ${{ steps.ci.outputs.image }}
       
   deploy-dev:
     if: ${{ inputs.dev }}
