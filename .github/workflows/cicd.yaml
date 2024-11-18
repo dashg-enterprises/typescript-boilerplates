@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/ci
+      - uses: ./.github/workflows/actions/ci
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -60,7 +60,7 @@ jobs:
     environment: dev
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/cd
+      - uses: ./.github/actions/workflows/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -77,7 +77,7 @@ jobs:
     environment: uat
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/cd
+      - uses: ./.github/actions/workflows/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
@@ -94,7 +94,7 @@ jobs:
     environment: prod
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/cd
+      - uses: ./.github/actions/workflows/cd
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           DASHG_CLOUD_PLATFORM_PAT: ${{ secrets.DASHG_CLOUD_PLATFORM_PAT }}
