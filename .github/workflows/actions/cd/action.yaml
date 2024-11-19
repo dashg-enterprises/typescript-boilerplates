@@ -11,6 +11,8 @@ inputs:
     description: 'AWS access key secret'
   AWS_REGION:
     description: 'AWS region'
+  GIT_ORGANIZATION_NAME:
+    description: 'Name of the organization to checkout cloud-deployment'
   TG_SOURCE:
     description: "Relative path to the project's iac folder from TG_DIR"
   TG_DIR:
@@ -33,7 +35,7 @@ runs:
     - name: Checkout cloud-deployment
       uses: actions/checkout@v4
       with:
-        repository: dashg-enterprises/cloud-deployment
+        repository: ${{ inputs.GIT_ORGANIZATION_NAME }}/cloud-deployment
         token: ${{ inputs.CLOUD_DEPLOYMENT_PAT }}
         path: ${{ inputs.TG_LOCAL_PATH }}
         # sparse-checkout: |
