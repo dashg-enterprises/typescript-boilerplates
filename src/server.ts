@@ -3,9 +3,9 @@ import express from "express";
 import cors from "cors";
 import { InversifyExpressServer } from "inversify-express-utils";
 
-import loadContainer from "./inversify.config";
-import { DomainError } from "./application/models/DomainError";
-import { getSecret } from "./infrastructure/getSecret";
+import { getSecret } from "./infrastructure/getSecret.js";
+import { DomainError } from "./application/models/DomainError.js";
+import loadContainer from "./inversify.config.js";
 
 // getSecret().then(secret => console.log("Wrapped up", secret.username, secret.password));
 

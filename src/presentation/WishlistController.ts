@@ -1,10 +1,10 @@
 import { BaseHttpController, controller, httpGet, httpPost, httpPut, requestBody, requestParam } from "inversify-express-utils";
 import { Request } from "express";
 import { inject } from "inversify";
-import { TYPES } from "../TYPES";
-import { IWishlistService } from "../application/WishlistService";
-import { Wishlist } from "../application/models/Wishlist";
-import { WishDto, WishlistDto } from "./models/WishlistDto";
+import { TYPES } from "../TYPES.js";
+import { IWishlistService } from "../application/WishlistService.js";
+import { Wishlist } from "../application/models/Wishlist.js";
+import { WishDto, WishlistDto } from "./models/WishlistDto.js";
 
 @controller("/accounts/:accountId/wishlists")
 export default class WishlistController extends BaseHttpController {

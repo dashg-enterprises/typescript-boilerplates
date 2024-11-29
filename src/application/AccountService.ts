@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES";
-import { DomainError } from "./models/DomainError";
-import { IAccountRepo } from "../infrastructure/AccountRepo";
-import { Account } from "./models/Account";
+import { TYPES } from "../TYPES.js";
+import { DomainError } from "./models/DomainError.js";
+import { IAccountRepo } from "../infrastructure/AccountRepo.js";
+import { Account } from "./models/Account.js";
 
 export interface IAccountService {
     getAll(): Promise<Account[]>;

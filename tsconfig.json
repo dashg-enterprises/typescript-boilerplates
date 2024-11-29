@@ -1,15 +1,15 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "lib": ["es6", "dom"],
+        "target": "ES2022",
+        "lib": ["ES2022"],
         "types": ["reflect-metadata"],
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "Node16",
+        "moduleResolution": "node16",
         "outDir": "out",
         "sourceMap": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*"

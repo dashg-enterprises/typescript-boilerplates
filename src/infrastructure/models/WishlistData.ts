@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { WishData } from "./WishData";
-import { Account } from "../../application/models/Account";
-import { AccountData } from "./AccountData";
+import { WishData } from "./WishData.js";
+import { Account } from "../../application/models/Account.js";
+import { AccountData } from "./AccountData.js";
 
 @Entity("wishlist")
 export class WishlistData {

@@ -1,5 +1,5 @@
 import {describe, expect, test} from '@jest/globals';
-import { Account } from "../../../src/application/models/Account";
+import { Account } from "../../../src/application/models/Account.js";
 
 describe("An account", () => {
     test('must have a strong password', () => {

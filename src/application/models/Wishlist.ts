@@ -1,4 +1,4 @@
-import { Wish } from "./Wish";
+import { Wish } from "./Wish.js";
 
 export class Wishlist {
     private id: number;

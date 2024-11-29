@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES";
-import { DomainError } from "./models/DomainError";
-import { IWishlistRepo } from "../infrastructure/WishlistRepo";
-import { Wishlist } from "./models/Wishlist";
-import { Wish } from "./models/Wish";
+import { TYPES } from "../TYPES.js";
+import { DomainError } from "./models/DomainError.js";
+import { IWishlistRepo } from "../infrastructure/WishlistRepo.js";
+import { Wishlist } from "./models/Wishlist.js";
+import { Wish } from "./models/Wish.js";
 
 export interface IWishlistService {
     getAll(accountId: number): Promise<Wishlist[]>;

@@ -1,10 +1,10 @@
 import { BaseHttpController, controller, httpGet, httpPost, requestBody } from "inversify-express-utils";
 import { Request } from "express";
 import { inject } from "inversify";
-import { TYPES } from "../TYPES";
-import { IAccountService } from "../application/AccountService";
-import { AccountDto } from "./models/AccountDto";
-import { Account } from "../application/models/Account";
+import { TYPES } from "../TYPES.js";
+import { IAccountService } from "../application/AccountService.js";
+import { AccountDto } from "./models/AccountDto.js";
+import { Account } from "../application/models/Account.js";
 
 @controller("/accounts")
 export default class AccountController extends BaseHttpController {

@@ -1,19 +1,19 @@
-import { AccountData } from "./infrastructure/models/AccountData";
+import { AccountData } from "./infrastructure/models/AccountData.js";
 import { Container, AsyncContainerModule } from "inversify";
 import { Repository } from "typeorm";
-import { TYPES } from "./TYPES";
-import { AccountService, IAccountService } from "./application/AccountService";
+import { TYPES } from "./TYPES.js";
+import { AccountService, IAccountService } from "./application/AccountService.js";
 
-// import "./presentation/AccountController";
-import "./presentation/HealthCheckController";
-// import "./presentation/WishlistController";
-import { AccountRepo, IAccountRepo } from "./infrastructure/AccountRepo";
-import { connectToDb } from "./infrastructure/db";
+// import "./presentation/AccountController.js";
+import "./presentation/HealthCheckController.js";
+// import "./presentation/WishlistController.js";
+import { AccountRepo, IAccountRepo } from "./infrastructure/AccountRepo.js";
+import { connectToDb } from "./infrastructure/db.js";
 
-import { getDbDetails } from "./infrastructure/getDbDetails";
-import { WishlistData } from "./infrastructure/models/WishlistData";
-import { IWishlistService, WishlistService } from "./application/WishlistService";
-import { IWishlistRepo, WishlistRepo } from "./infrastructure/WishlistRepo";
+import { getDbDetails } from "./infrastructure/getDbDetails.js";
+import { WishlistData } from "./infrastructure/models/WishlistData.js";
+import { IWishlistService, WishlistService } from "./application/WishlistService.js";
+import { IWishlistRepo, WishlistRepo } from "./infrastructure/WishlistRepo.js";
 
 export default async function loadContainer() {
 

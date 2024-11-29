@@ -1,8 +1,8 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { AccountData } from "./models/AccountData";
-import { SqlServerConnectionOptions } from "typeorm/driver/sqlserver/SqlServerConnectionOptions";
-import { WishData } from "./models/WishData";
-import { WishlistData } from "./models/WishlistData";
+import { AccountData } from "./models/AccountData.js";
+import { SqlServerConnectionOptions } from "typeorm/driver/sqlserver/SqlServerConnectionOptions.js";
+import { WishData } from "./models/WishData.js";
+import { WishlistData } from "./models/WishlistData.js";
 
 export type DataSourceDetails = {host: string, username: string, password: string};
 

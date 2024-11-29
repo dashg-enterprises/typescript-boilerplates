@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
-import { TYPES } from "../TYPES";
-import { AccountData } from "./models/AccountData";
-import { Account } from "../application/models/Account";
+import { TYPES } from "../TYPES.js";
+import { AccountData } from "./models/AccountData.js";
+import { Account } from "../application/models/Account.js";
 
 export interface IAccountRepo {
     getById(id: number): Promise<Account>;

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { WishlistData } from "./WishlistData";
+import { WishlistData } from "./WishlistData.js";
 
 @Entity("wish")
 export class WishData {
