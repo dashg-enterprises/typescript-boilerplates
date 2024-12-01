@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "../TYPES.js";
-import { WishlistData } from "./models/WishlistData.js";
+import { Wish } from "../application/models/Wish.js";
 import { Wishlist } from "../application/models/Wishlist.js";
 import { WishData } from "./models/WishData.js";
-import { Wish } from "../application/models/Wish.js";
+import { WishlistData } from "./models/WishlistData.js";
 
 export interface IWishlistRepo {
     getById(id: number): Promise<Wishlist>;
