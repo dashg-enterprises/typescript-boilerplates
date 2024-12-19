@@ -2,18 +2,18 @@ include "root" {
   path = find_in_parent_folders()
 }
 
+locals {
+  application_image = ""
+  repo_path = ""
+  environment_name = ""
+}
+
 terraform {
-  source = "git::${local.repo_url}.git//iac?ref=main"
+  source = "git::https://github.com/${local.repo_path}.git//iac?ref=main"
 }
 
 dependency "cloudscape" {
   config_path = "../../cloudscape"
-}
-
-locals {
-  application_image = ""
-  repo_url = ""
-  environment_name = ""
 }
 
 inputs = {

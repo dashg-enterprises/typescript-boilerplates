@@ -3,11 +3,11 @@ include "root" {
 }
 
 locals {
-  repo_url = ""
+  repo_path = ""
 }
 
 terraform {
-  source = "git::${local.repo_url}.git//iac/initialization?ref=main"
+  source = "git::https://github.com/${local.repo_path}.git//iac/initialization?ref=main"
 }
 
 inputs = {
