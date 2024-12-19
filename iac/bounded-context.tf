@@ -10,13 +10,11 @@ terraform {
 }
 
 locals { // get these as imports to construct DDD API
-  test_bounded_context = {
-    aggregate_root_name  = "Example"
-    bounded_context_name = "ExampleContext"
-    application_name     = "ExampleService-${var.environment_name}"
-    application_image    = var.application_image
-    vpc = var.vpc
-  }
+  aggregate_root_name  = "Example"
+  bounded_context_name = "ExampleContext"
+  application_name     = "ExampleService"
+  application_image    = var.application_image
+  vpc = var.vpc
 }
 
 # generating a first-class id in Terraform would 
@@ -24,9 +22,9 @@ locals { // get these as imports to construct DDD API
 # or vice-versa.
 module "fargate_bounded_context" {
   source = "git::https://github.com/dashg-enterprises/cloud-platform.git//modules/bounded-context/aws/cluster?ref=main"
-  aggregate_root_name = local.test_bounded_context.aggregate_root_name
-  bounded_context_name = local.test_bounded_context.bounded_context_name
-  application_name = local.test_bounded_context.application_name
-  application_image = local.test_bounded_context.application_image
-  vpc = local.test_bounded_context.vpc
+  aggregate_root_name = local.aggregate_root_name
+  bounded_context_name = local.bounded_context_name
+  application_name = "${local.application_name}-${var.environment_name}"
+  application_image = local.application_image
+  vpc = local.vpc
 }
