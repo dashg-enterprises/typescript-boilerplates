@@ -17,8 +17,6 @@ inputs:
     description: 'AWS region'
   GIT_ORGANIZATION_NAME:
     description: 'Name of the organization to checkout cloud-deployment'
-  ECR_REPOSITORY:
-    description: 'The name of the ECR repository'
   TG_DIR:
     description: 'The cloud-deployment directory to checkout'
   TG_SOURCE:
@@ -79,12 +77,27 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
+    - name: Yield raw output
+      if: ${{ inputs.TG_COMMAND == 'apply' }}
+      id: tg_ci_output
+      uses: gruntwork-io/terragrunt-action@v2
+      env:
+        INPUT_PRE_EXEC_1: |
+          git config --global url."https://user:${{inputs.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises/cloud-platform".insteadOf "https://github.com/dashg-enterprises/cloud-platform"
+        INPUT_PRE_EXEC_2: |
+          git config --global url."https://user:${{inputs.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+      with:
+        TF_VERSION: ${{ inputs.TF_VERSION }}
+        TG_VERSION: ${{ inputs.TG_VERSION }}
+        tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
+        tg_command: 'output -raw ecr_name --terragrunt-source ${{ inputs.TG_SOURCE }}'
+
     - name: Build, tag, and push image to Amazon ECR
       shell: bash
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ inputs.ECR_REPOSITORY }} 
+        ECR_REPOSITORY: ${{ steps.tg_ci_output.outputs.tg_action_output }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and

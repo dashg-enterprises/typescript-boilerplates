@@ -21,12 +21,11 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: examplecontextimages
-  GIT_ORGANIZATION_NAME: dashg-enterprises
-  TG_INIT_DIR: 'live/aws/_initializations/example-context'
-  TG_DEV_APP_DIR: 'live/aws/dev/applications/example-context'
-  TG_UAT_APP_DIR: 'live/aws/uat/applications/example-context'
-  TG_PROD_APP_DIR: 'live/aws/prod/applications/example-context'
+  GIT_ORGANIZATION_NAME: ${{ github.repository_owner }}
+  TG_INIT_DIR: 'live/aws/_initializations/${{ github.event.repository.name }}'
+  TG_DEV_APP_DIR: 'live/aws/dev/applications/${{ github.event.repository.name }}'
+  TG_UAT_APP_DIR: 'live/aws/uat/applications/${{ github.event.repository.name }}'
+  TG_PROD_APP_DIR: 'live/aws/prod/applications/${{ github.event.repository.name }}'
   TG_INIT_SOURCE: '../../../../..//iac/initialization'
   TG_APP_SOURCE: '../../../../../..//iac'
 
@@ -48,7 +47,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ env.AWS_REGION }}
           GIT_ORGANIZATION_NAME: ${{ env.GIT_ORGANIZATION_NAME }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           TG_SOURCE: ${{ env.TG_INIT_SOURCE }}
           TG_DIR: ${{ env.TG_INIT_DIR }}
       
