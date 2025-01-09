@@ -22,10 +22,10 @@ on:
 env:
   AWS_REGION: us-east-1
   GIT_ORGANIZATION_NAME: ${{ github.repository_owner }}
-  TG_INIT_DIR: 'live/aws/_initializations/${{ github.event.repository.name }}'
-  TG_DEV_APP_DIR: 'live/aws/dev/applications/${{ github.event.repository.name }}'
-  TG_UAT_APP_DIR: 'live/aws/uat/applications/${{ github.event.repository.name }}'
-  TG_PROD_APP_DIR: 'live/aws/prod/applications/${{ github.event.repository.name }}'
+  TG_INIT_DIR: 'live/aws/_initializations/example-context'
+  TG_DEV_APP_DIR: 'live/aws/dev/applications/example-context'
+  TG_UAT_APP_DIR: 'live/aws/uat/applications/example-context'
+  TG_PROD_APP_DIR: 'live/aws/prod/applications/example-context'
   TG_INIT_SOURCE: '../../../../..//iac/initialization'
   TG_APP_SOURCE: '../../../../../..//iac'
 
