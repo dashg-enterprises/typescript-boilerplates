@@ -27,4 +27,13 @@ module "fargate_bounded_context" {
   application_name = "${local.application_name}-${var.environment_name}"
   application_image = local.application_image
   vpc = local.vpc
+  with_sql = true
+}
+
+output "alb_arn" {
+  value = module.fargate_bounded_context.alb_arn
+}
+
+output "alb_arn" {
+  value = module.fargate_bounded_context.alb_dns_name
 }

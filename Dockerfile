@@ -1,11 +1,11 @@
 # Version 4
-FROM node:16-alpine AS builder
+FROM node:lts-alpine3.21 AS builder
 WORKDIR /app
 COPY . .
 RUN npm ci
 RUN npm run build
 
-FROM node:16-alpine AS final
+FROM node:lts-alpine3.21 AS final
 WORKDIR /app
 COPY --from=builder ./app/out ./out
 COPY package.json .
