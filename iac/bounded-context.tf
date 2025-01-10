@@ -30,10 +30,10 @@ module "fargate_bounded_context" {
   with_sql = true
 }
 
-output "alb_arn" {
-  value = module.fargate_bounded_context.alb_arn
+output "lb_arn" {
+  value = module.fargate_bounded_context.lb_arn
 }
 
-output "alb_dns_name" {
-  value = module.fargate_bounded_context.alb_dns_name
+output "lb_dns_name" {
+  value = module.fargate_bounded_context.lb_dns_name
 }
