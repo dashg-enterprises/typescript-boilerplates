@@ -29,12 +29,10 @@ concurrency: one-deploy-at-a-time
 
 env:
   AWS_REGION: us-east-1
-  ECR_REGISTRY: 624626124579.dkr.ecr.us-east-1.amazonaws.com                   
-  ECR_REPOSITORY: dashg-template-builds
-  APPLICATION_NAME: dashg-server-template
   TF_VERSION: '1.9.3'
   TG_VERSION: '0.63.6'
-  TG_DIR: 'live/aws/${{ inputs.environment }}/applications/example-context'
+  ORGANIZATION_NAME: ${{ github.repository_owner }}
+  TG_DIR: 'live/aws/${{ inputs.environment }}/applications/${{ github.event.repository.name }}'
   TG_LOCAL_PATH: 'deploy'
 
 jobs:
@@ -50,7 +48,7 @@ jobs:
       - name: Checkout cloud-deployment
         uses: actions/checkout@v4
         with:
-          repository: dashg-enterprises/cloud-deployment
+          repository: ${{ env.ORGANIZATION_NAME }}/cloud-deployment
           token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           path: ${{ env.TG_LOCAL_PATH }}
           sparse-checkout: |

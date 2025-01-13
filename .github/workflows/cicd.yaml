@@ -18,6 +18,15 @@ on:
         required: true
         default: true
         type: boolean
+      command:
+        description: "The command to run"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
+          - output
 
 env:
   AWS_REGION: us-east-1
@@ -38,6 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/workflows/actions/ci
+        if: ${{ inputs.command == 'apply' }}
         name: Run CI Action
         id: ci
         with: 
@@ -52,13 +62,14 @@ jobs:
       
   deploy-dev:
     if: ${{ inputs.dev }}
-    needs: build
+    # needs: build
     name: Deploy to Dev
     runs-on: ubuntu-latest
     environment: dev
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/workflows/actions/commit-build-to-cloud-deployment
+        if: ${{ inputs.command == 'apply' }}
         with: 
           CLOUD_DEPLOYMENT_PAT: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           TG_APP_DIR: ${{ env.TG_DEV_APP_DIR }}
@@ -76,7 +87,7 @@ jobs:
           TG_DIR: ${{ env.TG_DEV_APP_DIR }}
   deploy-uat:
     if: ${{ inputs.uat }}
-    needs: [build, deploy-dev]
+    # needs: [build, deploy-dev]
     name: Deploy to UAT
     runs-on: ubuntu-latest
     environment: uat
@@ -100,7 +111,7 @@ jobs:
           TG_DIR: ${{ env.TG_UAT_APP_DIR }}
   deploy-prod:
     if: ${{ inputs.prod }}
-    needs: [build, deploy-dev, deploy-uat]
+    # needs: [build, deploy-dev, deploy-uat]
     name: Deploy to Prod
     runs-on: ubuntu-latest
     environment: prod
