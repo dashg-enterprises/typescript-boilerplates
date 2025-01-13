@@ -62,7 +62,7 @@ jobs:
       
   deploy-dev:
     if: ${{ inputs.dev }}
-    # needs: build
+    needs: build
     name: Deploy to Dev
     runs-on: ubuntu-latest
     environment: dev
@@ -88,7 +88,7 @@ jobs:
           TG_COMMAND: ${{ inputs.command }}
   deploy-uat:
     if: ${{ inputs.uat }}
-    # needs: [build, deploy-dev]
+    needs: [build, deploy-dev]
     name: Deploy to UAT
     runs-on: ubuntu-latest
     environment: uat
@@ -113,7 +113,7 @@ jobs:
           TG_COMMAND: ${{ inputs.command }}
   deploy-prod:
     if: ${{ inputs.prod }}
-    # needs: [build, deploy-dev, deploy-uat]
+    needs: [build, deploy-dev, deploy-uat]
     name: Deploy to Prod
     runs-on: ubuntu-latest
     environment: prod
