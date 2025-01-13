@@ -5,4 +5,6 @@ export const TYPES = {
     WishlistDataRepo: "Repository<Wishlist>",
     IWishlistRepo: "IWishlistRepo",
     IWishlistService: "IWishlistService",
+    SSMClient: "SSMClient",
+    IConfigProvider: "IConfigProvider",
 }

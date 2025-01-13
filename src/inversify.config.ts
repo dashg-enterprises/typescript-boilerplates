@@ -6,6 +6,7 @@ import { AccountService, IAccountService } from "./application/AccountService.js
 
 // import "./presentation/AccountController.js";
 import "./presentation/HealthCheckController.js";
+import "./presentation/ConfigController.js";
 // import "./presentation/WishlistController.js";
 import { AccountRepo, IAccountRepo } from "./infrastructure/AccountRepo.js";
 import { connectToDb } from "./infrastructure/db.js";
@@ -14,10 +15,15 @@ import { getDbDetails } from "./infrastructure/getDbDetails.js";
 import { WishlistData } from "./infrastructure/models/WishlistData.js";
 import { IWishlistService, WishlistService } from "./application/WishlistService.js";
 import { IWishlistRepo, WishlistRepo } from "./infrastructure/WishlistRepo.js";
+import { ConfigProvider, IConfigProvider } from "./infrastructure/ConfigProvider.js";
+import { SSMClient } from "@aws-sdk/client-ssm";
 
 export default async function loadContainer() {
 
     const container = new Container();
+
+    container.bind<IConfigProvider>(TYPES.IConfigProvider).to(ConfigProvider);
+    container.bind<SSMClient>(TYPES.SSMClient).toDynamicValue(() => new SSMClient({}));
 
     // container.bind<IAccountService>(TYPES.IAccountService).to(AccountService);
     // container.bind<IAccountRepo>(TYPES.IAccountRepo).to(AccountRepo);
