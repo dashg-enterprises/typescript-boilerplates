@@ -6,6 +6,7 @@ import { AccountService, IAccountService } from "./application/AccountService.js
 
 // import "./presentation/AccountController.js";
 import "./presentation/HealthCheckController.js";
+import "./presentation/WeatherController.js";
 import "./presentation/ConfigController.js";
 // import "./presentation/WishlistController.js";
 import { AccountRepo, IAccountRepo } from "./infrastructure/AccountRepo.js";
@@ -17,6 +18,8 @@ import { IWishlistService, WishlistService } from "./application/WishlistService
 import { IWishlistRepo, WishlistRepo } from "./infrastructure/WishlistRepo.js";
 import { ConfigProvider, IConfigProvider } from "./infrastructure/ConfigProvider.js";
 import { SSMClient } from "@aws-sdk/client-ssm";
+import axios, { Axios } from "axios";
+import { IWeatherClient, WeatherClient } from "./infrastructure/WeatherClient.js";
 
 export default async function loadContainer() {
 
@@ -24,6 +27,8 @@ export default async function loadContainer() {
 
     container.bind<IConfigProvider>(TYPES.IConfigProvider).to(ConfigProvider);
     container.bind<SSMClient>(TYPES.SSMClient).toDynamicValue(() => new SSMClient({}));
+    container.bind<Axios>(TYPES.Axios).toConstantValue(axios);
+    container.bind<IWeatherClient>(TYPES.IWeatherClient).to(WeatherClient);
 
     // container.bind<IAccountService>(TYPES.IAccountService).to(AccountService);
     // container.bind<IAccountRepo>(TYPES.IAccountRepo).to(AccountRepo);

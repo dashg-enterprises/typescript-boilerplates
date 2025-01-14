@@ -6,5 +6,8 @@ export const TYPES = {
     IWishlistRepo: "IWishlistRepo",
     IWishlistService: "IWishlistService",
     SSMClient: "SSMClient",
+    Axios: "Axios",
+    IRestClient: "IRestClient",
+    IWeatherClient: "IRestClient",
     IConfigProvider: "IConfigProvider",
 }

@@ -16,7 +16,7 @@ export default class ConfigController extends BaseHttpController {
     @httpGet("/")
     private async checkConfig(request: Request) {
         const parameter = await this.provider.parameterByName("GITHUB_APP_CLIENT_ID");
-        const secret = await this.provider.parameterByName("GITHUB_APP_CLIENT_SECRET");
+        const secret = await this.provider.secretByName("GITHUB_APP_CLIENT_SECRET");
         return this.ok({...process.env, parameter, secret});
     }
 }
