@@ -28,7 +28,7 @@ module "fargate_bounded_context" {
   application_image = local.application_image
   vpc = local.vpc
   with_sql = false
-  public = true
+  public = false
 }
 
 output "lb_arn" {
