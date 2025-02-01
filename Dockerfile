@@ -14,4 +14,6 @@ FROM node:lts-alpine3.21 AS final
 WORKDIR /app
 COPY --from=builder ./app/out ./out
 COPY --from=builder ./app/node_modules ./node_modules
+COPY package.json .
+COPY package-lock.json .
 CMD [ "npm", "start" ]
