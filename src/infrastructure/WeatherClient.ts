@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../TYPES.js";
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
-import { Axios } from "axios";
+import { Axios, AxiosStatic } from "axios";
 import { IConfigProvider } from "./ConfigProvider.js";
 import { CurrentWeatherResponse } from "./weather/WeatherResponse.js";
 
@@ -12,14 +12,14 @@ export interface IWeatherClient {
 
 @injectable()
 export class WeatherClient implements IWeatherClient {
-    private readonly axios: Axios;
+    private readonly axios: AxiosStatic;
     private readonly version: string = "3.0"; 
     private readonly baseUrl: string = `https://api.openweathermap.org/data/${this.version}`;
     private readonly configProvider: IConfigProvider;
     private apiKey: string;
 
     constructor(
-        @inject(TYPES.Axios) axios: Axios, 
+        @inject(TYPES.Axios) axios: AxiosStatic, 
         @inject(TYPES.IConfigProvider) configProvider: IConfigProvider
     ) {
         this.axios = axios;

@@ -14,7 +14,7 @@ loadContainer().then(container => {
     inversifyWrapper.setConfig(app => {
         app.use(express.json());
         app.use(cors({
-            origin: "http://localhost:1234"
+            origin: "*"
         }));
     });
 

@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node ./out/server.js",
     "build": "tsc -p tsconfig.json",
@@ -14,16 +13,16 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.578.0",
     "@aws-sdk/client-ssm": "^3.726.1",
+    "@dashg-enterprises/ddd-platform": "^0.69.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "@dashg-enterprises/ddd-platform": "^0.68.0",
-    "mssql": "^9.3.2",
     "inversify": "6.1.4",
     "inversify-express-utils": "^6.4.6",
+    "mssql": "^10.0.4",
     "reflect-metadata": "^0.1.14",
-    "typeorm": "^0.3.17",
-    "typeorm-extension": "^3.5.1"
+    "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.23.6",

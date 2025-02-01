@@ -1,2 +1,4 @@
 iac
 deploy
+out
+node_modules
