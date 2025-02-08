@@ -1,10 +1,9 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES.js";
+import { TYPES } from "../../TYPES.js";
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { Axios, AxiosStatic } from "axios";
-import { IConfigProvider } from "./ConfigProvider.js";
-import { CurrentWeatherResponse } from "./weather/WeatherResponse.js";
-
+import { CurrentWeatherResponse } from "./WeatherResponse.js";
+import { IConfigProvider } from "@dashg-enterprises/ddd-platform";
 
 export interface IWeatherClient {
     currentWeather(lat: number, lon: number): Promise<CurrentWeatherResponse>;   

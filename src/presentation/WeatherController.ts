@@ -2,7 +2,7 @@ import { BaseHttpController, controller, httpGet, httpPost } from "inversify-exp
 import { Request } from "express";
 import { TYPES } from "../TYPES.js";
 import { inject } from "inversify";
-import { WeatherClient } from "../infrastructure/WeatherClient.js";
+import { WeatherClient } from "../infrastructure/weather/WeatherClient.js";
 
 @controller("/weather")
 export default class WeatherController extends BaseHttpController {

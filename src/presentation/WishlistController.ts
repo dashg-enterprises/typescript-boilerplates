@@ -3,7 +3,7 @@ import { Request } from "express";
 import { inject } from "inversify";
 import { TYPES } from "../TYPES.js";
 import { IWishlistService } from "../application/WishlistService.js";
-import { Wishlist } from "../application/models/Wishlist.js";
+import { Wishlist } from "../domain/Wishlist.js";
 import { WishDto, WishlistDto } from "./models/WishlistDto.js";
 
 @controller("/accounts/:accountId/wishlists")

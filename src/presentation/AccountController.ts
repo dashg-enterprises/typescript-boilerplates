@@ -4,7 +4,7 @@ import { inject } from "inversify";
 import { TYPES } from "../TYPES.js";
 import { IAccountService } from "../application/AccountService.js";
 import { AccountDto } from "./models/AccountDto.js";
-import { Account } from "../application/models/Account.js";
+import { Account } from "../domain/Account.js";
 
 @controller("/accounts")
 export default class AccountController extends BaseHttpController {

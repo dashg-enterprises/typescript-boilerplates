@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { TYPES } from "../TYPES.js";
-import { Wish } from "../application/models/Wish.js";
-import { Wishlist } from "../application/models/Wishlist.js";
+import { Wish } from "../domain/Wish.js";
+import { Wishlist } from "../domain/Wishlist.js";
 import { WishData } from "./models/WishData.js";
 import { WishlistData } from "./models/WishlistData.js";
 
