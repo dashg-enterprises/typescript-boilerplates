@@ -1,10 +1,10 @@
 import { CrudService, ICrudService } from "@dashg-enterprises/ddd-platform/lib/crud";
-import { Example } from "../domain/Example";
-import { IExampleDto } from "../contracts/ExampleDto";
-import { ExampleData } from "../infrastructure/models/ExampleData";
-import { IExampleDao } from "../infrastructure/ExampleDao";
+import { Example } from "../domain/Example.js";
+import { IExampleDto } from "../contracts/ExampleDto.js";
+import { ExampleData } from "../infrastructure/models/ExampleData.js";
+import { IExampleDao } from "../infrastructure/ExampleDao.js";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES";
+import { TYPES } from "../TYPES.js";
 
 export interface IExampleService extends ICrudService<Example> {
     

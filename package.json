@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node ./out/server.js",
     "build": "tsc -p tsconfig.json",
@@ -13,7 +14,7 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.578.0",
     "@aws-sdk/client-ssm": "^3.726.1",
-    "@dashg-enterprises/ddd-platform": "^0.69.11",
+    "@dashg-enterprises/ddd-platform": "^0.69.12",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.2",

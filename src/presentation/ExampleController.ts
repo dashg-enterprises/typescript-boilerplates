@@ -1,9 +1,9 @@
 import { CrudController, IControllerBase, IControllerSearchParams } from "@dashg-enterprises/ddd-platform";
-import { IExampleDto } from "../contracts/ExampleDto";
-import { IExampleView } from "./models/IExampleView";
+import { IExampleDto } from "../contracts/ExampleDto.js";
+import { IExampleView } from "./models/IExampleView.js";
 import { inject, injectable, named } from "inversify";
-import { TYPES } from "../TYPES";
-import { IExampleService } from "../application/ExampleService";
+import { TYPES } from "../TYPES.js";
+import { IExampleService } from "../application/ExampleService.js";
 import { controller, httpGet } from "inversify-express-utils";
 import { Request } from "express";
 

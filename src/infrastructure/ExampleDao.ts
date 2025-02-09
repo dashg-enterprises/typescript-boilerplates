@@ -1,6 +1,6 @@
 import { CrudDao, ICrudDao, PLATFORM_TYPES } from "@dashg-enterprises/ddd-platform";
-import { ExampleData } from "./models/ExampleData";
-import { TYPES } from "../TYPES";
+import { ExampleData } from "./models/ExampleData.js";
+import { TYPES } from "../TYPES.js";
 import { inject, named } from "inversify";
 import { Repository } from "typeorm";
 

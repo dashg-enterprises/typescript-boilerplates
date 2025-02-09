@@ -3,7 +3,7 @@ import { TYPES } from "../../TYPES.js";
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { Axios, AxiosStatic } from "axios";
 import { CurrentWeatherResponse } from "./WeatherResponse.js";
-import { IConfigProvider } from "@dashg-enterprises/ddd-platform";
+import { IConfigProvider, PLATFORM_TYPES } from "@dashg-enterprises/ddd-platform";
 
 export interface IWeatherClient {
     currentWeather(lat: number, lon: number): Promise<CurrentWeatherResponse>;   
@@ -19,7 +19,7 @@ export class WeatherClient implements IWeatherClient {
 
     constructor(
         @inject(TYPES.Axios) axios: AxiosStatic, 
-        @inject(TYPES.IConfigProvider) configProvider: IConfigProvider
+        @inject(PLATFORM_TYPES.IConfigProvider) configProvider: IConfigProvider
     ) {
         this.axios = axios;
         this.configProvider = configProvider;

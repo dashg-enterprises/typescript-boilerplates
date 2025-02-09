@@ -1,3 +1,3 @@
-import { IExampleDto } from "../../contracts/ExampleDto";
+import { IExampleDto } from "../../contracts/ExampleDto.js";
 
 export interface IExampleView extends IExampleDto {}
