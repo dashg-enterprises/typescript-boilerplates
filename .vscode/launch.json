@@ -16,8 +16,8 @@
             "env": {
                 "NODE_ENV": "local",
                 "DBHOST": "localhost",
-                "DBUSERNAME": "playground-user",
-                "DBPASSWORD": "pass"
+                "DBUSERNAME": "postgres",
+                "DBPASSWORD": "secret"
             },
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"

@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../TYPES.js";
-import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { Axios, AxiosStatic } from "axios";
 import { CurrentWeatherResponse } from "./WeatherResponse.js";
 import { IConfigProvider, PLATFORM_TYPES } from "@dashg-enterprises/ddd-platform";

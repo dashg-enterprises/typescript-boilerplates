@@ -9,7 +9,6 @@ export const TYPES = {
     IRestClient: Symbol.for("IRestClient"),
     IWeatherClient: Symbol.for("IRestClient"),
     IConfigProvider: Symbol.for("IConfigProvider"),
-    SSMClient: Symbol.for("SSMClient"),
     IExampleService: Symbol.for("IExampleService"),
     IExampleController: Symbol.for("IExampleController"),
     IExampleDao: Symbol.for("IExampleDao"),

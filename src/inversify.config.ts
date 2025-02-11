@@ -1,34 +1,41 @@
-import { AccountData } from "./infrastructure/models/AccountData.js";
-import { Container, AsyncContainerModule } from "inversify";
-import { Repository } from "typeorm";
 import { TYPES } from "./TYPES.js";
-import { AccountService, IAccountService } from "./application/AccountService.js";
 
 // import "./presentation/AccountController.js";
 import "./presentation/HealthCheckController.js";
 import "./presentation/WeatherController.js";
 import "./presentation/ConfigController.js";
 // import "./presentation/WishlistController.js";
-import { AccountRepo, IAccountRepo } from "./infrastructure/AccountRepo.js";
-import { WishlistData } from "./infrastructure/models/WishlistData.js";
-import { IWishlistService, WishlistService } from "./application/WishlistService.js";
-import { IWishlistRepo, WishlistRepo } from "./infrastructure/WishlistRepo.js";
-import { SSMClient } from "@aws-sdk/client-ssm";
 import axios, { AxiosStatic } from "axios";
-import { Host } from "@dashg-enterprises/ddd-platform";
+import { Host, HostApi } from "@dashg-enterprises/ddd-platform";
 import { IWeatherClient, WeatherClient } from "./infrastructure/weather/WeatherClient.js";
 import { ExampleService } from "./application/ExampleService.js";
 import { ExampleDao } from "./infrastructure/ExampleDao.js";
 import { ExampleController } from "./presentation/ExampleController.js";
+import { ExampleData } from "./infrastructure/models/ExampleData.js";
 
-const container = Host.newContainer();
+export async function startHost() {
+    const container = Host.newContainer();
+    container.bind<AxiosStatic>(TYPES.Axios).toConstantValue(axios);
+    container.bind<IWeatherClient>(TYPES.IWeatherClient).to(WeatherClient);
 
-container.bind<SSMClient>(TYPES.SSMClient).toDynamicValue(() => new SSMClient({}));
-container.bind<AxiosStatic>(TYPES.Axios).toConstantValue(axios);
-container.bind<IWeatherClient>(TYPES.IWeatherClient).to(WeatherClient);
-
-export const host = new Host(container);
-host.withCrud(ExampleController, ExampleService, TYPES.IExampleService, ExampleDao, TYPES.IExampleDao);
+    const host = new Host(container);
+    await host
+        .withConfig()
+        .withCrud(
+            ExampleController,
+            ExampleService, TYPES.IExampleService,
+            ExampleDao, TYPES.IExampleDao)
+        .loadSql({
+            type: 'pgsql',
+            database: 'example_db',
+            host: 'localhost',
+            entities: [ExampleData],
+            repositories: [TYPES.ExampleDataRepository],
+            synchronize: true,
+        });
+    
+    const hostApi = new HostApi(host);
+    hostApi.start(8080, () => console.log("we're up!"));
 
 // container.bind<IAccountService>(TYPES.IAccountService).to(AccountService);
 // container.bind<IAccountRepo>(TYPES.IAccountRepo).to(AccountRepo);
@@ -51,3 +58,5 @@ host.withCrud(ExampleController, ExampleService, TYPES.IExampleService, ExampleD
 // });
 
 // await container.loadAsync(dbBindings);
+
+}
