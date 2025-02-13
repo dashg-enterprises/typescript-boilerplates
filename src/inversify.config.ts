@@ -28,7 +28,6 @@ export async function startHost() {
         .loadSql({
             type: 'pgsql',
             database: 'example_db',
-            host: 'localhost',
             entities: [ExampleData],
             repositories: [TYPES.ExampleDataRepository],
             synchronize: true,
