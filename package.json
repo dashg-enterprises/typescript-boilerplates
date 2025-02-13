@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "start": "node ./out/server.js",
-    "start-local": "export NODE_ENV=local && export DBHOST=localhost && export DBUSERNAME=postgres && export DBPASSWORD=secret && node ./out/server.js",
+    "start-local": "export NODE_ENV=local && export DB_HOST=localhost && export DB_USERNAME=postgres && export DB_PASSWORD=secret && node ./out/server.js",
     "build": "tsc -p tsconfig.json",
     "test": "jest"
   },
@@ -14,7 +14,7 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.578.0",
     "@aws-sdk/client-ssm": "^3.726.1",
-    "@dashg-enterprises/ddd-platform": "^0.69.23",
+    "@dashg-enterprises/ddd-platform": "^0.69.30",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.2",

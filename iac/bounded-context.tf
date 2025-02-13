@@ -16,7 +16,7 @@ module "fargate_bounded_context" {
   application_name = "${local.application_name}-${var.environment_name}"
   application_image = local.application_image
   vpc = local.vpc
-  with_sql = false
+  with_sql = true
   public = false
 }
 
