@@ -14,7 +14,7 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.578.0",
     "@aws-sdk/client-ssm": "^3.726.1",
-    "@dashg-enterprises/ddd-platform": "^0.69.33",
+    "@dashg-enterprises/ddd-platform": "^0.69.34",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.2",
