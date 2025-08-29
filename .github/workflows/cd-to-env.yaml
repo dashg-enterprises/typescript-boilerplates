@@ -1,6 +1,6 @@
 name: CD Step - Deploy to AWS
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       environment:
@@ -21,7 +21,7 @@ on:
           - apply
           - destroy
   # pull_request:
-  #   branches: 
+  #   branches:
   #     - main
   #   types: [closed]
 
@@ -29,11 +29,13 @@ concurrency: one-deploy-at-a-time
 
 env:
   AWS_REGION: us-east-1
-  TF_VERSION: '1.9.3'
-  TG_VERSION: '0.63.6'
-  ORGANIZATION_NAME: ${{ github.repository_owner }}
-  TG_DIR: 'live/aws/${{ inputs.environment }}/applications/${{ github.event.repository.name }}'
-  TG_LOCAL_PATH: 'deploy'
+  ECR_REGISTRY: 624626124579.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: dashg-template-builds
+  APPLICATION_NAME: dashg-server-template
+  TF_VERSION: "1.9.3"
+  TG_VERSION: "0.63.6"
+  TG_DIR: "live/aws/${{ inputs.environment }}/applications/example-context"
+  TG_LOCAL_PATH: "deploy"
 
 jobs:
   deploy:
@@ -48,7 +50,7 @@ jobs:
       - name: Checkout cloud-deployment
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.ORGANIZATION_NAME }}/cloud-deployment
+          repository: dashg-enterprises/cloud-deployment
           token: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           path: ${{ env.TG_LOCAL_PATH }}
           sparse-checkout: |
@@ -64,7 +66,7 @@ jobs:
         uses: gruntwork-io/terragrunt-action@v2
         env:
           INPUT_PRE_EXEC_1: |
-            git config --global url."https://user:${{secrets.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises/cloud-platform".insteadOf "https://github.com/dashg-enterprises/cloud-platform"
+            git config --global url."https://user:$c{{secrets.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises/cloud-platform".insteadOf "https://github.com/dashg-enterprises/cloud-platform"
           INPUT_PRE_EXEC_2: |
             git config --global url."https://user:${{secrets.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
           INPUT_PRE_EXEC_3: |
@@ -73,4 +75,4 @@ jobs:
           TF_VERSION: ${{ env.TF_VERSION }}
           TG_VERSION: ${{ env.TG_VERSION }}
           tg_dir: ${{ env.TG_LOCAL_PATH }}/${{ env.TG_DIR }}
-          tg_command: '${{ inputs.command }} --terragrunt-source ../../../../../..//iac'
+          tg_command: "${{ inputs.command }} --terragrunt-source ../../../../../..//iac"

@@ -2,39 +2,39 @@ name: CI
 description: Project build action
 outputs:
   image:
-    description: "Application build image output from CI" 
+    description: "Application build image output from CI"
     value: ${{ steps.build-image.outputs.image }}
 inputs:
   CLOUD_DEPLOYMENT_PAT:
-    description: 'PAT to checkout cloud-deployment'
+    description: "PAT to checkout cloud-deployment"
   DASHG_CLOUD_PLATFORM_PAT:
-    description: 'PAT to access dashg-enterprises/cloud-platform'
+    description: "PAT to access dashg-enterprises/cloud-platform"
   AWS_ACCESS_KEY_ID:
-    description: 'AWS access key id'
+    description: "AWS access key id"
   AWS_SECRET_ACCESS_KEY:
-    description: 'AWS access key secret'
-  NPM_DDD_PLATFORM_ACCESS_TOKEN:
-    description: 'PAT to access dashg-enterprises/ddd-platform on NPM'
+    description: "AWS access key secret"
   AWS_REGION:
-    description: 'AWS region'
+    description: "AWS region"
+  NPM_DDD_PLATFORM_ACCESS_TOKEN:
+    description: "PAT to access dashg-enterprises/ddd-platform on NPM"
   GIT_ORGANIZATION_NAME:
-    description: 'Name of the organization to checkout cloud-deployment'
+    description: "Name of the organization to checkout cloud-deployment"
   TG_DIR:
-    description: 'The cloud-deployment directory to checkout'
+    description: "The cloud-deployment directory to checkout"
   TG_SOURCE:
     description: "Relative path to the project's iac/initialization folder"
   TG_COMMAND:
-    description: 'The Terragrunt command to execute'
-    default: 'apply'
+    description: "The Terragrunt command to execute"
+    default: "apply"
   TG_LOCAL_PATH:
-    description: 'Where cloud-deployment will be placed in the workflow agent'
-    default: 'deploy'
+    description: "Where cloud-deployment will be placed in the workflow agent"
+    default: "deploy"
   TF_VERSION:
-    description: 'The Terraform version to use'
-    default: '1.9.3'
+    description: "The Terraform version to use"
+    default: "1.9.3"
   TG_VERSION:
-    description: 'The Terragrunt version to use'
-    default: '0.63.6'
+    description: "The Terragrunt version to use"
+    default: "0.63.6"
 runs:
   using: "composite"
   steps:
@@ -50,8 +50,8 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
-    
+        node-version: "20.x"
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       # uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
@@ -73,7 +73,7 @@ runs:
         TF_VERSION: ${{ inputs.TF_VERSION }}
         TG_VERSION: ${{ inputs.TG_VERSION }}
         tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
-        tg_command: '${{ inputs.TG_COMMAND }} --terragrunt-source ${{ inputs.TG_SOURCE }}'
+        tg_command: "${{ inputs.TG_COMMAND }} --terragrunt-source ${{ inputs.TG_SOURCE }}"
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -92,7 +92,7 @@ runs:
         TF_VERSION: ${{ inputs.TF_VERSION }}
         TG_VERSION: ${{ inputs.TG_VERSION }}
         tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
-        tg_command: 'output -raw ecr_name --terragrunt-source ${{ inputs.TG_SOURCE }}'
+        tg_command: "output -raw ecr_name --terragrunt-source ${{ inputs.TG_SOURCE }}"
 
     - name: Build, tag, and push image to Amazon ECR
       shell: bash

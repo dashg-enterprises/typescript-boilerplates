@@ -2,33 +2,33 @@ name: CD
 description: Project deploy action
 inputs:
   CLOUD_DEPLOYMENT_PAT:
-    description: 'PAT to checkout cloud-deployment'
+    description: "PAT to checkout cloud-deployment"
   DASHG_CLOUD_PLATFORM_PAT:
-    description: 'PAT to access dashg-enterprises/cloud-platform'
+    description: "PAT to access dashg-enterprises/cloud-platform"
   AWS_ACCESS_KEY_ID:
-    description: 'AWS access key id'
+    description: "AWS access key id"
   AWS_SECRET_ACCESS_KEY:
-    description: 'AWS access key secret'
+    description: "AWS access key secret"
   AWS_REGION:
-    description: 'AWS region'
+    description: "AWS region"
   GIT_ORGANIZATION_NAME:
-    description: 'Name of the organization to checkout cloud-deployment'
+    description: "Name of the organization to checkout cloud-deployment"
   TG_SOURCE:
     description: "Relative path to the project's iac folder from TG_DIR"
   TG_DIR:
-    description: 'The cloud-deployment directory to checkout'
+    description: "The cloud-deployment directory to checkout"
   TG_COMMAND:
-    description: 'The Terragrunt command to execute'
-    default: 'apply'
+    description: "The Terragrunt command to execute"
+    default: "apply"
   TG_LOCAL_PATH:
-    description: 'Where cloud-deployment will be placed in the workflow agent'
-    default: 'deploy'
+    description: "Where cloud-deployment will be placed in the workflow agent"
+    default: "deploy"
   TF_VERSION:
-    description: 'The Terraform version to use'
-    default: '1.9.3'
+    description: "The Terraform version to use"
+    default: "1.9.3"
   TG_VERSION:
-    description: 'The Terragrunt version to use'
-    default: '0.63.6'
+    description: "The Terragrunt version to use"
+    default: "0.63.6"
 runs:
   using: "composite"
   steps:
@@ -60,4 +60,19 @@ runs:
         TF_VERSION: ${{ inputs.TF_VERSION }}
         TG_VERSION: ${{ inputs.TG_VERSION }}
         tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
-        tg_command: '${{ inputs.TG_COMMAND }} --terragrunt-source ${{ inputs.TG_SOURCE }}'
+        tg_command: "${{ inputs.TG_COMMAND }} --terragrunt-source ${{ inputs.TG_SOURCE }}"
+
+    - name: Output TG
+      uses: gruntwork-io/terragrunt-action@v2
+      env:
+        INPUT_PRE_EXEC_1: |
+          git config --global url."https://user:${{inputs.DASHG_CLOUD_PLATFORM_PAT}}@github.com/dashg-enterprises/cloud-platform".insteadOf "https://github.com/dashg-enterprises/cloud-platform"
+        INPUT_PRE_EXEC_2: |
+          git config --global url."https://user:${{inputs.CLOUD_DEPLOYMENT_PAT}}@github.com".insteadOf "https://github.com"
+        INPUT_PRE_EXEC_3: |
+          git config --global --list
+      with:
+        TF_VERSION: ${{ inputs.TF_VERSION }}
+        TG_VERSION: ${{ inputs.TG_VERSION }}
+        tg_dir: ${{ inputs.TG_LOCAL_PATH }}/${{ inputs.TG_DIR }}
+        tg_command: "output --terragrunt-source ${{ inputs.TG_SOURCE }}"
